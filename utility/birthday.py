@@ -31,8 +31,17 @@ class Birthday(Field):
 
     # helper method to check and set birthday value
     def _set_birthdate(self, value):
-        birthday = validators.date(value, allow_empty=True)
-        if birthday and birthday > datetime.now().date():
+        if value is None:
+            return None
+        birthday = datetime.strptime(
+            value.strip()
+            .replace(".", " ")
+            .replace("/", " ")
+            .replace("-", " ")
+            .replace(".", " "),
+            "%d %m %Y",
+        ).date()
+        if birthday is not None and birthday > datetime.now().date():
             raise FutureDateError
         return birthday
     
@@ -40,3 +49,4 @@ class Birthday(Field):
     # overridden method __repr__
     def __repr__(self) -> str:
         return self._value.strftime("%A %d-%m-%Y")
+    
