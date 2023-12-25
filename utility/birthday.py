@@ -1,4 +1,3 @@
-from validator_collection import validators # pip install validator-collection
 from datetime import datetime
 from utility.field import Field
 
