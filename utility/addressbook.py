@@ -16,7 +16,7 @@ from utility.zip_code import ZipCode
 from utility.country import Country
 
 
-class AddresBook(UserDict):
+class AddressBook(UserDict):
     """
     The AddresBook class extends the UserDict class by adding the add_record method
     and checking that the items added to the dictionary are valid (keys and values based on the Record class).
