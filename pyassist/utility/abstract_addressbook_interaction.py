@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from utility.addressbook import AddressBook
-from utility.name import Name
+from utility.addressbook import Name
 from utility.phone import Phone
 from utility.email import Email
 from utility.birthday import Birthday
@@ -8,7 +8,7 @@ from utility.address import Address
 from utility.record import Record
 
 class AbstractAddressbookInteraction(ABC):
-    
+    abstractmethod
     def __init__(self, addressbook: AddressBook) -> None:
         self.addressbook = addressbook
         
@@ -37,11 +37,10 @@ class AbstractAddressbookInteraction(ABC):
     def add_address(self) -> Address:
         pass
     
-    
+
     @abstractmethod
-    def create_record(self) -> Record:
-        pass
-    
+    def add_record(self):
+        pass    
     
     @abstractmethod
     def del_record(self) -> Record:
