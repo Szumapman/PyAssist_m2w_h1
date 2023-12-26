@@ -47,6 +47,7 @@ class Record:
         index = self.emails.index(old_email)
         self.emails[index] = new_email
         
+
     # return amount of days to the next birthday
     def days_to_birthday(self):
         current_date = datetime.now().date()
@@ -66,4 +67,26 @@ class Record:
             month=this_year_birthday.month,
             day=this_year_birthday.day,
         ).date()
-        return f"day(s) to next birthday: {(next_birthday -  current_date).days}"
+        return (next_birthday -  current_date).days
+    
+    
+    # overridden method __repr__
+    def __repr__(self) -> str:
+        record_repr = f"Name: {self.name}\n"
+        if self.phones:
+            record_repr += "Phones:\n"
+            for phone in self.phones:
+                record_repr += f"    - {phone}\n"
+        if self.emails:
+            record_repr += "Emails:\n"
+            for email in self.emails:
+                record_repr += f"    - {email}\n"
+        if self.birthday:
+            record_repr += f"Birthday:\n    {self.birthday}\n    {self.days_to_birthday()}\n"
+        if self.address:
+            record_repr += f"Address:\n    Street: {self.address.street}\n"
+            record_repr += f"    City: {self.address.city}\n"
+            record_repr += f"    Zip Code: {self.address.zip_code}\n"
+            record_repr += f"    Country: {self.address.country}\n"
+        record_repr += "----------------------------------\n"
+        return record_repr
