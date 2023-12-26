@@ -8,10 +8,10 @@ packages = [package for package in
 
 setup(
     name='pyassist',
-    version='1.0',
+    version='2.1',
     description='The program allows the user to manage data in an address book, including tasks such as adding, deleting, exporting, and importing records. It also features the capability to export and import data in CSV format. Additionally, the program facilitates file sorting on the computer. It provides error handling and a user-friendly command-line interface for easy of use.',
-    url='https://github.com/Szumapman/PyAssist',
-    author=('Beata Chrząszcz', 'Jakub Szymaniak', 'Julia Macha', 'Paweł Szumański', 'Sabina Limmer',),
+    url='https://github.com/Szumapman/PyAssist_m2w_h1',
+    author=('Paweł Szumański',),
     author_email='',
     packages=packages,
     package_dir={"": "pyassist"},
