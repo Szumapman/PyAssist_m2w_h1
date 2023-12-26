@@ -105,7 +105,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         name = self.add_name(*args)
         if name:
             self.addressbook.add_record(self.create_record(name))
-            return f"A record: {record.name} added to your address book."
+            return f"A record: {name} added to your address book."
         return "Operation cancelled"
     
     
