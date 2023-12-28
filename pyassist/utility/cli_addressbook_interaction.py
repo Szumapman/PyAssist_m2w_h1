@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 from datetime import datetime, timedelta
 
 from utility.abstract_addressbook_interaction import AbstractAddressbookInteraction
@@ -18,15 +20,15 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
     def __init__(self, addressbook: AddressBook) -> None:
         self.addressbook = addressbook
 
-    def _set_str_name(*args):
-        if len(args) > 1:
-            return " ".join(args[1:]).strip().title()
+    def _set_str_name(self, argument):
+        if argument:
+            return argument.strip().title()
         return input("Type name or <<< if you want to cancel: ").strip().title()
     
 
-    def add_name(self, *args) -> Name:
+    def add_name(self, argument) -> Name:
         while True:
-            name = self._set_str_name(*args)
+            name = self._set_str_name(argument)
             if name in self.addressbook.keys():
                 print(f"Contact {name} already exists. Choose another name.")
                 continue
@@ -52,7 +54,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
 
     def add_birthday(self) -> Birthday:
         birthday = input("Input the date of birth as day month year (e.g. 15-10-1985 or 15 10 1985) or <<< if you want to cancel: ")
-        if birthday == "<<<":
+        if birthday == "<<<" or birthday == "":
             return None
         return Birthday(birthday)  
     
@@ -101,16 +103,16 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         return Record(name, phones, emails, birthday, address)    
 
                 
-    def add_record(self, *args):
-        name = self.add_name(*args)
+    def add_record(self, argument):
+        name = self.add_name(argument)
         if name:
             self.addressbook.add_record(self.create_record(name))
             return f"A record: {name} added to your address book."
         return "Operation cancelled"
     
     
-    def del_record(self, *args) -> Record:
-        name = self._set_str_name(*args)
+    def del_record(self, argument) -> Record:
+        name = self._set_str_name(argument)
         if name == '<<<':
             return "Operation cancelled"
         elif name in self.addressbook:
@@ -120,9 +122,9 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
             return f"Record {name} not found in the address book."
         
     
-    def show(self, *args):
-        if len(args) > 1:
-            name_record_to_show = self._set_str_name(*args)
+    def show(self, argument):
+        if argument:
+            name_record_to_show = self._set_str_name(argument)
             if name_record_to_show in self.addressbook:
                 return f'{self.addressbook[name_record_to_show]}'
             return f"Contact {name_record_to_show} doesn't exist."
@@ -134,10 +136,10 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         return records_info
         
 
-    def show_upcoming_birthday(self, *args):
+    def show_upcoming_birthday(self, argument):
         number_of_days = 7
-        if len(args) > 1:
-            number_of_days = int("".join(args[1:]).strip())
+        if argument:
+            number_of_days = int(argument)
             if number_of_days < 1:
                 raise ValueError
         current_date = datetime.now().date()
@@ -161,7 +163,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
 
         
     def edit_name(self, record):
-        name = self.add_name()
+        name = self.add_name(self)
         if name:
             self.addressbook.add_record(Record(name, record.phones, record.emails, record.birthday, record.address))
             return f'Name changed from {self.addressbook.pop(record.name.value).name} to {name}'
@@ -280,42 +282,46 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         "birthday": edit_birthday,
         }
 
-    def _execute_comand(self, cmd: str, record: Record):
-        """Function to execute user commands
-
-        Args:
-            cmd (str): user command
-            record (Record): record to edit
-        """
-        if cmd not in self.RECORD_EDIT_COMMANDS:
-            return f'Command {cmd} is not recognized'
-        cmd = self.RECORD_EDIT_COMMANDS[cmd]
-        return self.cmd(record)
     
-    
-    def edit_record(self, *args):
-        name = self._set_str_name(*args)
+    def edit_record(self, argument):
+        name = self._set_str_name(argument)
         if name in self.addressbook:
             record = self.addressbook[name]
             # command = prompt(f"Type what you want to change in {name} contact: ", completer=command_completer)
             command = input(f"Type what you want to change in {name} contact: ") 
-            return self._execute_comand(command, record)
+            return self._execute_command(self.RECORD_EDIT_COMMANDS, command, record)
         return f"Record {name} not found in the address book."
     
 
-    def search(self, *args):
-        pass
+    def search(self, argument):
+        if argument:
+            search_query = argument
+        else:
+            search_query = input("Enter the search query (or type '<<<' to exit): ").strip()
+            if search_query == "<<<" or "":
+                return "Operation canceled."
+        query_addressbook = self.addressbook.search(search_query)           
+        if query_addressbook:
+            return "Search results:\n" + CliAddressBookInteraction(query_addressbook).show('')
+        return "No matching results found."
+    
+
+    def export_to_csv(self, argument):
+        if argument:
+            filename = argument
+        else:
+            filename = input("Type the filename to export to (e.g., output.csv) or <<< to cancel: ").strip()       
+        if filename == "<<<" or filename == "":
+            return "Export cancelled."
+        program_dir = Path(__file__).parent.parent
+        full_path = program_dir.joinpath("data/"+filename)
+        self.addressbook.export_to_csv(full_path)
+        return f"Data exported successfully to {full_path}."
     
     
 
-    def export_to_csv(self, *args):
+    def import_from_csv(self, argument):
         pass
-    
-    
-
-    def import_from_csv(self, *args):
-        pass
-    
     
 
     def save_addresbook(self, filename):
@@ -325,3 +331,66 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
 
     def load_addresbook(self, filename):
         pass
+    
+    # dict for addressbook menu
+    ADDRESSBOOK_MENU_COMMANDS = {
+        # "exit": cli_pyassist_exit,
+        "add": add_record, 
+        "edit": edit_record,
+        "show": show,
+        "delete": del_record,
+        "export": export_to_csv, 
+        # "import": import_from_csv, 
+        "birthday": show_upcoming_birthday, 
+        "search": search, 
+        # "up": pyassit_main_menu,
+        # "help": addressbook_commands,
+    }
+    
+    
+    def _execute_command(self, commands_dict: dict, cmd: str, argument):
+        """Function to execute user commands
+
+        Args:
+            cmd (str): user command
+            argument: argument to process
+        """
+        if cmd not in commands_dict:
+            return f'Command {cmd} is not recognized'
+        cmd = commands_dict[cmd]
+        return cmd(self, argument)
+    
+    
+    # function that parses user input commands
+    def  _parse_command(self, user_input: str) -> (str, str):
+        """
+        Parse user input command
+
+        Args:
+            user_input (str): user input command
+        
+        Returns:
+            str: command
+            str: argument
+        """
+        tokens = user_input.split()
+        command = tokens[0].lower()
+        argument = "".join(tokens[1:])
+        return command, argument
+    
+    
+    # receiving a command from a user
+    def _user_command_input(self):
+        # def user_command_input(completer: CommandCompleter, menu_name=""):
+        # user_input = prompt(f"{menu_name} >>> ", completer=completer).strip()
+        user_input = input("PyAssist  addressbook >>> ")
+        if user_input:
+            return self._parse_command(user_input)
+        return "", ""
+    
+    def cli_addressbook_menu(self):
+        while True:
+            # cmd, arguments = user_command_input(completer, "address book")
+            cmd, argument = self._user_command_input()
+            info = self._execute_command(self.ADDRESSBOOK_MENU_COMMANDS, cmd, argument)
+            print(info)
