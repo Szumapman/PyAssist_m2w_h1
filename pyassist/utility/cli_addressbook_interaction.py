@@ -9,15 +9,49 @@ from utility.addressbook import AddressBook
 from utility.name import Name
 from utility.phone import Phone
 from utility.email import Email
-from utility.birthday import Birthday
+from utility.birthday import Birthday, FutureDateError
 from utility.address import Address
 from utility.street import Street
 from utility.city import City
 from utility.zip_code import ZipCode
 from utility.country import Country
 from utility.record import Record
+from utility.exit_interrupt import ExitInterrupt
+
 
 class CliAddressBookInteraction(AbstractAddressbookInteraction):
+    
+    # function to handle with errors
+    def _error_handler(func):
+        def wrapper(*args):
+            while True:
+                try:
+                    return func(*args)
+                except ValueError:
+                    if func.__name__ == "add_name":
+                        print("The name field cannot be empty, try again.")
+                    if func.__name__ == "add_phone":
+                        print("Invalid phone number, try again.")
+                    if func.__name__ == "add_email":
+                        print("Invalid email, try again.")
+                    if func.__name__ == "add_birthday":
+                        print("Invalid date format, try again.")
+                    if func.__name__ == "import_from_csv":
+                        return "I can't import from this source. Check the file."
+                    if func.__name__ == "show_upcoming_birthday":
+                        return "Wrong number of days to show. Please try again."
+                except FutureDateError:
+                    print("You can't use a future date as a birthday, try again.")
+                except FileNotFoundError:
+                    return "Error: Unable to find the specified file. Please try again."
+                    # if func.__name__ == "export_to_csv":
+                    #     return "Error: Unable to find the specified file. Please try again."
+                    # if func.__name__ == "import_from_csv":
+                    #     return "Error: Unable to find the specified file. Please try again."
+                except Exception as e:
+                    return f"Error: {e}. Please try again."
+        return wrapper
+
     
     def __init__(self, addressbook: AddressBook) -> None:
         self.addressbook = addressbook
@@ -28,6 +62,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         return input("Type name or <<< if you want to cancel: ").strip().title()
     
 
+    @_error_handler
     def add_name(self, argument) -> Name:
         while True:
             name = self._set_str_name(argument)
@@ -40,6 +75,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
                 return Name(name)
     
 
+    @_error_handler
     def add_phone(self) -> Phone:
         phone = input("Type phone or <<< if you want to cancel: ")
         if phone == "<<<":
@@ -47,6 +83,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         return Phone(phone)
     
     
+    @_error_handler
     def add_email(self) -> Email:
         email = input("Type email or <<< if you want to cancel: ")
         if email == "<<<":
@@ -54,6 +91,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         return Email(email)
 
 
+    @_error_handler
     def add_birthday(self) -> Birthday:
         birthday = input("Input the date of birth as day month year (e.g. 15-10-1985 or 15 10 1985) or <<< if you want to cancel: ")
         if birthday == "<<<" or birthday == "":
@@ -61,6 +99,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         return Birthday(birthday)  
     
 
+    @_error_handler
     def add_address(self) -> Address:
         street = input("street: ")
         city = input("city: ")
@@ -78,7 +117,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
     }
     
     
-    def create_record(self, name: Name) -> Record:
+    def _create_record(self, name: Name) -> Record:
         phones = []
         emails = []
         birthday = None
@@ -104,11 +143,12 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
                     field = data
         return Record(name, phones, emails, birthday, address)    
 
-                
+    
+    @_error_handler            
     def add_record(self, argument):
         name = self.add_name(argument)
         if name:
-            self.addressbook.add_record(self.create_record(name))
+            self.addressbook.add_record(self._create_record(name))
             return f"A record: {name} added to your address book."
         return "Operation cancelled"
     
@@ -137,7 +177,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
             records_info += repr(record)
         return records_info
         
-
+    @_error_handler
     def show_upcoming_birthday(self, argument):
         number_of_days = 7
         if argument:
@@ -163,7 +203,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
             return info
         return f"No upcoming birthdays in the next {number_of_days} days."    
 
-        
+  
     def edit_name(self, record):
         name = self.add_name(self)
         if name:
@@ -218,7 +258,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         return info    
         
         
-    # change of phone or email
+    # change phone or email
     def _change_data(self, record, type):
         if type == "phone":
             data_list = record.phones
@@ -307,6 +347,8 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
             return "Search results:\n" + CliAddressBookInteraction(query_addressbook).show('')
         return "No matching results found."
     
+    
+    @_error_handler
     def _import_export_prepare(self,argument):
         if argument:
             filename = argument
@@ -316,7 +358,9 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
             return None
         program_dir = Path(__file__).parent.parent
         return program_dir.joinpath("data/"+filename)
-
+    
+    
+    @_error_handler
     def export_to_csv(self, argument):
         full_path = self._import_export_prepare(argument)
         if full_path:
@@ -325,6 +369,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         return "Export cancelled."
     
     
+    @_error_handler
     def import_from_csv(self, argument):
         full_path = self._import_export_prepare(argument)
         if full_path:
@@ -333,6 +378,8 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         return "Import cancelled."
 
 
+
+    @_error_handler
     def save_addresbook(self, filename):
         # for the time being, the path to the addressbook file is hardcoded
         program_dir = Path(__file__).parent.parent
@@ -341,6 +388,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         return "Addressbook saved."
     
     
+    @_error_handler
     def load_addresbook(self, filename):
         # for the time being, the path to the addressbook file is hardcoded
         program_dir = Path(__file__).parent.parent
@@ -348,9 +396,24 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         self.addressbook = self.addressbook.load_addresbook(filename)
         # return f"Addressbook loaded from file {filename}"
     
+    
+    def exit_program(self, argument):
+        raise ExitInterrupt
+    
+    
+    def help(self, argument):
+        width = 75
+        help = f'╔{"═"*width}╗\n' 
+        help += "║ {:>22} - {:<48} ║\n".format('command', 'description <optional argument>')   
+        help += f'╠{"═"*width}╣\n'
+        for command, description in self.COMMANDS_HELP.items():
+            help += "║ {:>22} - {:<48} ║\n".format(command, description)
+        help += f'╚{"═"*width}╝'
+        return help
+    
+    
     # dict for addressbook menu
     ADDRESSBOOK_MENU_COMMANDS = {
-        # "exit": cli_pyassist_exit,
         "add": add_record, 
         "edit": edit_record,
         "show": show,
@@ -359,11 +422,28 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         "import": import_from_csv, 
         "birthday": show_upcoming_birthday, 
         "search": search,
-        "save": save_addresbook, 
+        # "save": save_addresbook, 
         "up": 'up',
-        # "help": addressbook_commands,
+        "exit": exit_program,
+        "help": help,
     }
     
+    
+    COMMANDS_HELP = {
+        "add <name>": "add record <name>", 
+        "edit <name>": "edit record <name>",
+        "show": "show all records",
+        "show <name>": "show specific record",
+        "delete <name>": "delete record <name>",
+        "export <file name>": "export addressbook to csv file <file name>", 
+        "import <file name>": "import addressbook from csv file <file name>", 
+        "birthday <days>": "show birthdays in upcoming days <days>", 
+        "search <query>": "search in addressbook <query>",
+        # "save": save_addresbook, 
+        "up": 'back tu main menu',
+        "exit": "exit from the program",
+        "help": "show this menu",
+    }
     
     def _execute_command(self, commands_dict: dict, cmd: str, argument):
         """Function to execute user commands
