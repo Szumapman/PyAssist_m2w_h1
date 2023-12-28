@@ -381,7 +381,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
 
 
     @_error_handler
-    def save_addresbook(self, filename):
+    def save_addressbook(self, filename):
         # for the time being, the path to the addressbook file is hardcoded
         program_dir = Path(__file__).parent.parent
         filename = program_dir.joinpath("data/addresbook.dat")
