@@ -56,6 +56,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
     def __init__(self, addressbook: AddressBook) -> None:
         self.addressbook = addressbook
 
+
     def _set_str_name(self, argument):
         if argument:
             return argument.strip().title()
@@ -177,6 +178,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         for record in self.addressbook.values():
             records_info += repr(record)
         return records_info
+        
         
     @_error_handler
     def show_upcoming_birthday(self, argument):
