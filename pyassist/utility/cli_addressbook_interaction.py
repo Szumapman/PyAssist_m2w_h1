@@ -59,7 +59,8 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
     def _set_str_name(self, argument):
         if argument:
             return argument.strip().title()
-        return input("Type name or <<< if you want to cancel: ").strip().title()
+        names_completer = FuzzyWordCompleter(self.addressbook.keys())
+        return prompt("Type name or <<< if you want to cancel: ", completer=names_completer).strip().title()
     
 
     @_error_handler
@@ -329,8 +330,8 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         name = self._set_str_name(argument)
         if name in self.addressbook:
             record = self.addressbook[name]
-            # command = prompt(f"Type what you want to change in {name} contact: ", completer=command_completer)
-            command = input(f"Type what you want to change in {name} contact: ") 
+            command_completer = FuzzyWordCompleter(self.RECORD_EDIT_COMMANDS)
+            command = prompt(f"Type what you want to change in {name} contact: ", completer=command_completer)
             return self._execute_command(self.RECORD_EDIT_COMMANDS, command, record)
         return f"Record {name} not found in the address book."
     
@@ -453,7 +454,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
             argument: argument to process
         """
         if cmd not in commands_dict:
-            matches = difflib.get_close_matches(cmd, self.COMMANDS)
+            matches = difflib.get_close_matches(cmd, commands_dict)
             info =  f'\nmaybe you meant: {' or '.join(matches)}' if matches else ''
             return f'Command {cmd} is not recognized' + info
         cmd = commands_dict[cmd]
