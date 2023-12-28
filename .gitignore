@@ -153,3 +153,4 @@ cython_debug/
 
 # ignored data files
 pyassist/data/*.csv
+pyassist/data/*.dat
