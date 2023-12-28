@@ -1,19 +1,47 @@
 import difflib
 import pyfiglet
+import cowsay
+import sys
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import FuzzyWordCompleter
 
 from utility.addressbook import AddressBook
 from utility.cli_addressbook_interaction import CliAddressBookInteraction
+from utility.exit_interrupt import ExitInterrupt
 
 
 class CliPyassist:
     
+    # function to handle with errors
+    def _error_handler(func):
+        def wrapper(self, *args):
+            while True:
+                try:
+                    return func(self, *args)
+                # except FileNotFoundError as e: 
+                #     return f"I can't find folder."
+                except (ExitInterrupt, KeyboardInterrupt):
+                    self.cli_pyassist_exit("")
+                except Exception as e:
+                    return f"Error: {e}. Please try again."
+        return wrapper
+
+    
     def __init__(self) -> None:
         self.cli_addressbook_interaction = CliAddressBookInteraction(AddressBook())
 
+
     def addressbook_interaction(self, *args):
         return self.cli_addressbook_interaction.cli_addressbook_menu()
+    
+    
+    # exit / close program
+    def cli_pyassist_exit(self, argument):
+        # Note.save_notes(NOTES, NOTES_DATA_PATH)   
+        # ADDRESSBOOK.save_addresbook(ADDRESSBOOK_DATA_PATH)
+        self.cli_addressbook_interaction.save_addresbook("")
+        cowsay.cow("Your data has been saved.\nGood bye!") 
+        sys.exit()
     
     
     def help(self, argument):
@@ -28,6 +56,7 @@ class CliPyassist:
 
     COMMANDS = {
         'addressbook': addressbook_interaction,
+        'exit': cli_pyassist_exit,
         'help': help,
     }
     
@@ -80,7 +109,7 @@ class CliPyassist:
         cmd = self.COMMANDS[cmd]
         return cmd(self, argument)
     
-    
+    @_error_handler
     def main_menu(self):
         while True:
             cmd, argument = self._user_command_input()
