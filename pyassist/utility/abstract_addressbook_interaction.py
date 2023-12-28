@@ -103,7 +103,7 @@ class AbstractAddressbookInteraction(ABC):
     
     
     @abstractmethod
-    def save_addresbook(self, filename):
+    def save_addressbook(self, filename):
         pass
     
     
