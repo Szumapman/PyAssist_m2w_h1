@@ -18,8 +18,6 @@ class CliPyassist:
             while True:
                 try:
                     return func(self, *args)
-                # except FileNotFoundError as e: 
-                #     return f"I can't find folder."
                 except (ExitInterrupt, KeyboardInterrupt):
                     self.cli_pyassist_exit("")
                 except Exception as e:
@@ -37,13 +35,11 @@ class CliPyassist:
     
     # exit / close program
     def cli_pyassist_exit(self, argument):
-        # Note.save_notes(NOTES, NOTES_DATA_PATH)   
-        # ADDRESSBOOK.save_addresbook(ADDRESSBOOK_DATA_PATH)
         self.cli_addressbook_interaction.save_addressbook("")
         cowsay.cow("Your data has been saved.\nGood bye!") 
         sys.exit()
     
-    
+    # show help
     def help(self, argument):
         width = 60
         help = f'╔{"═"*width}╗\n' 
@@ -54,17 +50,21 @@ class CliPyassist:
         help += f'╚{"═"*width}╝'
         return help
 
+
     COMMANDS = {
         'addressbook': addressbook_interaction,
         'exit': cli_pyassist_exit,
         'help': help,
     }
     
+    
     COMMANDS_HELP = {
         "addressbook": "open addressbook",
         "exit": "exit from the program",
         "help": "show this menu",
     }
+    
+    
     # a function that parses user input commands
     def  _parse_command(self, user_input: str) -> (str, str):
         """
@@ -82,6 +82,7 @@ class CliPyassist:
         argument = "".join(tokens[1:])
         return command, tuple(argument)
 
+
     # receiving a command from a user
     def _user_command_input(self):
         commands_completer = FuzzyWordCompleter(self.COMMANDS.keys())
@@ -89,7 +90,7 @@ class CliPyassist:
         if user_input:
             return self._parse_command(user_input)
         return "", ""
-    # dict for addressbook menu
+    
 
     def _execute_commands(self, cmd: str, argument: str):
         """Function to execute user commands
@@ -109,16 +110,16 @@ class CliPyassist:
         cmd = self.COMMANDS[cmd]
         return cmd(self, argument)
     
+    
     @_error_handler
     def main_menu(self):
         while True:
             cmd, argument = self._user_command_input()
             print(self._execute_commands(cmd, argument))    
-        
+
 
 def main():
     print(pyfiglet.figlet_format("PyAssist", font = "slant"))
-
     cli_pyassist = CliPyassist()
     cli_pyassist.cli_addressbook_interaction.load_addressbook(None)
     cli_pyassist.main_menu()       
