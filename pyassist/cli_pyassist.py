@@ -13,7 +13,7 @@ class CliPyassist:
         self.cli_addressbook_interaction = CliAddressBookInteraction(AddressBook())
 
     def addressbook_interaction(self, *args):
-        self.cli_addressbook_interaction.cli_addressbook_menu()
+        return self.cli_addressbook_interaction.cli_addressbook_menu()
     
     
     def help(self, argument):
@@ -83,7 +83,6 @@ class CliPyassist:
     
     def main_menu(self):
         while True:
-            # cmd, arguments = user_command_input(completer, "address book")
             cmd, argument = self._user_command_input()
             print(self._execute_commands(cmd, argument))    
         
@@ -92,7 +91,7 @@ def main():
     print(pyfiglet.figlet_format("PyAssist", font = "slant"))
 
     cli_pyassist = CliPyassist()
-    # print(cli_pyassist.cli_addressbook_interaction.load_addresbook("path_to_file_with_addressbook"))
+    cli_pyassist.cli_addressbook_interaction.load_addresbook(None)
     cli_pyassist.main_menu()       
 
 if __name__ == "__main__":
