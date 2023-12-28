@@ -40,6 +40,8 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
                         return "I can't import from this source. Check the file."
                     if func.__name__ == "show_upcoming_birthday":
                         return "Wrong number of days to show. Please try again."
+                    if func.__name__ == "_item_selection":
+                        print("This is not a number, try again.")
                 except FutureDateError:
                     print("You can't use a future date as a birthday, try again.")
                 except FileNotFoundError:
@@ -239,16 +241,18 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
 
 
     # help function to choose email or phone
-    def _item_selection(self, record, data_list, show):
-        print(f"Contact {record.name} {type}s:\n{show}", end="")
-        number_to_change = input("Select by typing a number (for example 1 or 2): ")
-        try:
+    @_error_handler
+    def _item_selection(self, record, data_list, show, type):
+        while True:
+            print(f"Contact {record.name} {type}s:{show}", end="")
+            number_to_change = input("\nSelect by typing a number (for example 1 or 2) or <<< if you want to cancel: ")
+            if number_to_change == "<<<" or number_to_change == "":
+                return -1
             number_to_change = int(number_to_change) - 1
             if number_to_change >= len(data_list) or number_to_change < 0:
-                raise ValueError
-            return number_to_change
-        except ValueError:
-            return -1    
+                print("Wrong option, try again")
+                continue 
+            return number_to_change    
     
     
     # help function to create string from phones or emails
@@ -282,10 +286,10 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
                                 return f"{type} edited sucessfully."
                             return "Operation canceled."
                         else:
-                            number_to_change = self._item_selection(record, data_list, show)
+                            number_to_change = self._item_selection(record, data_list, show, type)
+                            print(f'c {number_to_change}')
                             if number_to_change == -1:
-                                print("Wrong option, try again")
-                                break
+                                return "Operation canceled."
                             data_to_add = self.add_email() if type == "email" else self.add_phone()
                             if data_to_add:
                                 data_list[number_to_change] = data_to_add
@@ -304,8 +308,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
                         else:
                             number_to_delete = self.item_selection(record, data_list, show)
                             if number_to_delete == -1:
-                                print("Wrong option, try again")
-                                break
+                                return "Operation canceled."
                             print(f"{type} no {number_to_delete+1}: {data_list.pop(number_to_delete)} deleted.")
                             return f"{type} edited sucessfully."
                     else:
