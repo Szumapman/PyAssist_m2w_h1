@@ -120,7 +120,7 @@ def main():
     print(pyfiglet.figlet_format("PyAssist", font = "slant"))
 
     cli_pyassist = CliPyassist()
-    cli_pyassist.cli_addressbook_interaction.load_addresbook(None)
+    cli_pyassist.cli_addressbook_interaction.load_addressbook(None)
     cli_pyassist.main_menu()       
 
 if __name__ == "__main__":
