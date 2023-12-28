@@ -1,81 +1,100 @@
+import difflib
+import pyfiglet
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import FuzzyWordCompleter
+
 from utility.addressbook import AddressBook
 from utility.cli_addressbook_interaction import CliAddressBookInteraction
 
 
-CLI_ADDRESSBOOK_INTERACTION = CliAddressBookInteraction(AddressBook())
-ADDRESSBOOK_MENU_COMMANDS = {
-    # "exit": cli_pyassist_exit,
-    "add": CLI_ADDRESSBOOK_INTERACTION.add_record, #lambda *args: add_record(ADDRESSBOOK, *args),
-    "edit": CLI_ADDRESSBOOK_INTERACTION.edit_record, #lambda *args: edit_record(ADDRESSBOOK, *args),
-    "show": CLI_ADDRESSBOOK_INTERACTION.show, #lambda *args: show(ADDRESSBOOK, *args),
-    "delete": CLI_ADDRESSBOOK_INTERACTION.del_record, #lambda *args: del_record(ADDRESSBOOK, *args),
-    # "export": export_to_csv, #lambda *args: export_to_csv(ADDRESSBOOK, *args),
-    # "import": import_from_csv, #lambda *args: import_from_csv(ADDRESSBOOK, *args),
-    "birthday": CLI_ADDRESSBOOK_INTERACTION.show_upcoming_birthday, #lambda *args: show_upcoming_birthday(ADDRESSBOOK, *args),
-    # "search": search, #lambda *args: search(ADDRESSBOOK, *args),
-    # "up": pyassit_main_menu,
-    # "help": addressbook_commands,
-}
-
-# a function that parses user input commands
-def  parse_command(user_input: str) -> (str, tuple):
-    """
-    Parse user input command
-
-    Args:
-        user_input (str): user input command
+class CliPyassist:
     
-    Returns:
-        str: command
-        tuple: arguments
-    """
-    tokens = user_input.split()
-    command = tokens[0].lower()
-    arguments = tokens[1:]
-    return command, tuple(arguments)
+    def __init__(self) -> None:
+        self.cli_addressbook_interaction = CliAddressBookInteraction(AddressBook())
+        
+    def addressbook_interaction(self, *args):
+        self.cli_addressbook_interaction.cli_addressbook_menu()
+    
+    
+    def help(self, argument):
+        width = 60
+        help = f'╔{"═"*width}╗\n' 
+        help += "║ {:>12} - {:<43} ║\n".format('command', 'description')   
+        help += f'╠{"═"*width}╣\n'
+        for command, description in self.COMMANDS_HELP.items():
+            help += "║ {:>12} - {:<43} ║\n".format(command, description)
+        help += f'╚{"═"*width}╝'
+        return help
 
-# receiving a command from a user
-def user_command_input():
-# def user_command_input(completer: CommandCompleter, menu_name=""):
-    # user_input = prompt(f"{menu_name} >>> ", completer=completer).strip()
-    user_input = input("???> ")
-    if user_input:
-        return parse_command(user_input)
-    return "", ""
-# dict for addressbook menu
+    COMMANDS = {
+        'addressbook': addressbook_interaction,
+        'help': help,
+    }
+    
+    COMMANDS_HELP = {
+        "addressbook": "open addressbook",
+        "exit": "exit from the program",
+        "help": "show this menu",
+    }
+    # a function that parses user input commands
+    def  _parse_command(self, user_input: str) -> (str, str):
+        """
+        Parse user input command
 
-def execute_commands(menu_commands: dict, cmd: str, arguments: tuple):
-    """Function to execute user commands
+        Args:
+            user_input (str): user input command
+        
+        Returns:
+            str: command
+            str: argument
+        """
+        tokens = user_input.split()
+        command = tokens[0].lower()
+        argument = "".join(tokens[1:])
+        return command, tuple(argument)
 
-    Args:
-        menu_commands (dict): dict for menu-specific commands
-        cmd (str): user command
-        arguments (tuple): arguments from user input
+    # receiving a command from a user
+    def _user_command_input(self):
+    # def user_command_input(completer: CommandCompleter, menu_name=""):
+        commands_completer = FuzzyWordCompleter(self.COMMANDS.keys())
+        user_input = prompt(f'PyAssist main menu >>> ', completer=commands_completer).strip()
+        # user_input = input(f'CLI_PyAssist main menu >>> ')
+        if user_input:
+            return self._parse_command(user_input)
+        return "", ""
+    # dict for addressbook menu
 
-    Returns:
-        func: function with data_ti_use and arguments
-    """
-    if cmd not in menu_commands:
-        return f"Command {cmd} is not recognized" #+ similar_command(cmd, menu_commands.keys())
-    cmd = menu_commands[cmd]
-    return cmd(*arguments)
+    def _execute_commands(self, cmd: str, argument: str):
+        """Function to execute user commands
+
+        Args:
+            menu_commands (dict): dict for menu-specific commands
+            cmd (str): user command
+            argument (str): argument from user input
+
+        Returns:
+            func: function with data_ti_use and arguments
+        """
+        if cmd not in self.COMMANDS:
+            matches = difflib.get_close_matches(cmd, self.COMMANDS)
+            info =  f'\nmaybe you meant: {' or '.join(matches)}' if matches else ''
+            return f"Command {cmd} is not recognized" + info
+        cmd = self.COMMANDS[cmd]
+        return cmd(self, argument)
+    
+    
+    def main_menu(self):
+        while True:
+            # cmd, arguments = user_command_input(completer, "address book")
+            cmd, argument = self._user_command_input()
+            print(self._execute_commands(cmd, argument))    
+        
 
 def main():
-    # print(pyfiglet.figlet_format("PyAssist", font = "slant"))
-    # print("     ╔════════════════════════════╗")
-    # print("     ║         Main Menu          ║")
-    # print("     ╠════════════════════════════╣")
-    # print("     ║ - addressbook              ║")
-    # print("     ║ - notes                    ║")
-    # print("     ║ - sort                     ║")
-    # print("     ║ - exit                     ║")
-    # print("     ╚════════════════════════════╝")
-    # pyassit_main_menu()
-    while True:
-        # cmd, arguments = user_command_input(completer, "address book")
-        cmd, arguments = user_command_input()
-        print(execute_commands(ADDRESSBOOK_MENU_COMMANDS, cmd, arguments))       
-            
+    print(pyfiglet.figlet_format("PyAssist", font = "slant"))
+
+    cli_pyassist = CliPyassist()
+    cli_pyassist.main_menu()       
 
 if __name__ == "__main__":
     main()
