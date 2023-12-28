@@ -1,6 +1,8 @@
-import os
+import difflib
 from pathlib import Path
 from datetime import datetime, timedelta
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import FuzzyWordCompleter
 
 from utility.abstract_addressbook_interaction import AbstractAddressbookInteraction
 from utility.addressbook import AddressBook
@@ -305,32 +307,46 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
             return "Search results:\n" + CliAddressBookInteraction(query_addressbook).show('')
         return "No matching results found."
     
-
-    def export_to_csv(self, argument):
+    def _import_export_prepare(self,argument):
         if argument:
             filename = argument
         else:
-            filename = input("Type the filename to export to (e.g., output.csv) or <<< to cancel: ").strip()       
+            filename = input("Type the filename (e.g., output.csv) or <<< to cancel: ").strip()       
         if filename == "<<<" or filename == "":
-            return "Export cancelled."
+            return None
         program_dir = Path(__file__).parent.parent
-        full_path = program_dir.joinpath("data/"+filename)
-        self.addressbook.export_to_csv(full_path)
-        return f"Data exported successfully to {full_path}."
-    
-    
+        return program_dir.joinpath("data/"+filename)
 
-    def import_from_csv(self, argument):
-        pass
+    def export_to_csv(self, argument):
+        full_path = self._import_export_prepare(argument)
+        if full_path:
+            self.addressbook.export_to_csv(full_path)
+            return f"Data exported successfully to {full_path}."
+        return "Export cancelled."
     
+    
+    def import_from_csv(self, argument):
+        full_path = self._import_export_prepare(argument)
+        if full_path:
+            self.addressbook.import_from_csv(full_path)
+            return f"Data imported successfully from {full_path}."
+        return "Import cancelled."
+
 
     def save_addresbook(self, filename):
-        pass
+        # for the time being, the path to the addressbook file is hardcoded
+        program_dir = Path(__file__).parent.parent
+        filename = program_dir.joinpath("data/addresbook.dat")
+        self.addressbook.save_addresbook(filename)
+        return "Addressbook saved."
     
     
-
     def load_addresbook(self, filename):
-        pass
+        # for the time being, the path to the addressbook file is hardcoded
+        program_dir = Path(__file__).parent.parent
+        filename = program_dir.joinpath("data/addresbook.dat")
+        self.addressbook = self.addressbook.load_addresbook(filename)
+        # return f"Addressbook loaded from file {filename}"
     
     # dict for addressbook menu
     ADDRESSBOOK_MENU_COMMANDS = {
@@ -340,9 +356,10 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         "show": show,
         "delete": del_record,
         "export": export_to_csv, 
-        # "import": import_from_csv, 
+        "import": import_from_csv, 
         "birthday": show_upcoming_birthday, 
-        "search": search, 
+        "search": search,
+        "save": save_addresbook, 
         # "up": pyassit_main_menu,
         # "help": addressbook_commands,
     }
@@ -356,7 +373,9 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
             argument: argument to process
         """
         if cmd not in commands_dict:
-            return f'Command {cmd} is not recognized'
+            matches = difflib.get_close_matches(cmd, self.COMMANDS)
+            info =  f'\nmaybe you meant: {' or '.join(matches)}' if matches else ''
+            return f'Command {cmd} is not recognized' + info
         cmd = commands_dict[cmd]
         return cmd(self, argument)
     
@@ -381,9 +400,8 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
     
     # receiving a command from a user
     def _user_command_input(self):
-        # def user_command_input(completer: CommandCompleter, menu_name=""):
-        # user_input = prompt(f"{menu_name} >>> ", completer=completer).strip()
-        user_input = input("PyAssist  addressbook >>> ")
+        commands_completer = FuzzyWordCompleter(self.ADDRESSBOOK_MENU_COMMANDS.keys())
+        user_input = prompt(f'PyAssist  addressbook >>> ', completer=commands_completer).strip()
         if user_input:
             return self._parse_command(user_input)
         return "", ""
