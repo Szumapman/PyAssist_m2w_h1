@@ -108,7 +108,7 @@ class AbstractAddressbookInteraction(ABC):
     
     
     @abstractmethod
-    def load_addresbook(self, filename):
+    def load_addressbook(self, filename):
         pass
     
     
