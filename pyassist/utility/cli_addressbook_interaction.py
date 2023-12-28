@@ -360,7 +360,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         "birthday": show_upcoming_birthday, 
         "search": search,
         "save": save_addresbook, 
-        # "up": pyassit_main_menu,
+        "up": 'up',
         # "help": addressbook_commands,
     }
     
@@ -410,5 +410,6 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         while True:
             # cmd, arguments = user_command_input(completer, "address book")
             cmd, argument = self._user_command_input()
-            info = self._execute_command(self.ADDRESSBOOK_MENU_COMMANDS, cmd, argument)
-            print(info)
+            if cmd == 'up':
+                return 'back to main menu'
+            print(self._execute_command(self.ADDRESSBOOK_MENU_COMMANDS, cmd, argument))
