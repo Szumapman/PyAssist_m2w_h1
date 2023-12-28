@@ -39,7 +39,7 @@ class CliPyassist:
     def cli_pyassist_exit(self, argument):
         # Note.save_notes(NOTES, NOTES_DATA_PATH)   
         # ADDRESSBOOK.save_addresbook(ADDRESSBOOK_DATA_PATH)
-        self.cli_addressbook_interaction.save_addresbook("")
+        self.cli_addressbook_interaction.save_addressbook("")
         cowsay.cow("Your data has been saved.\nGood bye!") 
         sys.exit()
     
