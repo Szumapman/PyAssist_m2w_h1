@@ -11,7 +11,7 @@ class CliPyassist:
     
     def __init__(self) -> None:
         self.cli_addressbook_interaction = CliAddressBookInteraction(AddressBook())
-        
+
     def addressbook_interaction(self, *args):
         self.cli_addressbook_interaction.cli_addressbook_menu()
     
@@ -55,10 +55,8 @@ class CliPyassist:
 
     # receiving a command from a user
     def _user_command_input(self):
-    # def user_command_input(completer: CommandCompleter, menu_name=""):
         commands_completer = FuzzyWordCompleter(self.COMMANDS.keys())
-        user_input = prompt(f'PyAssist main menu >>> ', completer=commands_completer).strip()
-        # user_input = input(f'CLI_PyAssist main menu >>> ')
+        user_input = prompt(f'main menu >>> ', completer=commands_completer).strip()
         if user_input:
             return self._parse_command(user_input)
         return "", ""
@@ -94,6 +92,7 @@ def main():
     print(pyfiglet.figlet_format("PyAssist", font = "slant"))
 
     cli_pyassist = CliPyassist()
+    # print(cli_pyassist.cli_addressbook_interaction.load_addresbook("path_to_file_with_addressbook"))
     cli_pyassist.main_menu()       
 
 if __name__ == "__main__":
