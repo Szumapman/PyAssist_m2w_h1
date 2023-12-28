@@ -12,4 +12,4 @@ class Field(ABC):
 
     # overridden method __repr__
     def __repr__(self) -> str:
-        return f"{self._value}"
+        return f"{self.value}"
