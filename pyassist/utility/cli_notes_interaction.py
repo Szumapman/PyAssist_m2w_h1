@@ -23,10 +23,12 @@ class CliNotesInteraction(AbstractNotesInteraction):
     def _display_notes(self, notes: Notes, arg: str) -> str:
         if notes:
             notes_to_show = arg
-            i = 0;
+            i = 1;
             for note in notes.values():
-                notes_to_show += f'\nNote {i+1}:\n{note}\n{"═"*30}'
-            return notes_to_show   
+                notes_to_show += f'\nNote {i}:\n{note}\n{"═"*30}'
+                i += 1
+            return notes_to_show
+        return "Nothing to show."
             
     
     def _set_title_str(self, arg: str) -> str:
@@ -50,32 +52,73 @@ class CliNotesInteraction(AbstractNotesInteraction):
         if title == "" or title == "<<<":
             return "Operation canceled." 
         content = input("Enter note content: ")
-        tags = list(input("Tags (separated by space): ").strip().split())
+        tags = set(input("Tags (separated by space): ").strip().split())
         self.notes.add_note(Note(Title(title), Content(content), tags))
         return f'Note with title: "{title}", created successfully.'
             
-    def choice_note(self):
-        pass
+    
+    def _edit_title(self, note: Note):
+        title = self._add_title("")
+        if title == "" or title == "<<<":
+            return "Operation canceled."
+        old_note_title = note.title.value
+        note.title = Title(title)
+        self.notes[note.title.value] = note
+        self.notes.pop(old_note_title)
+        return f'Note title chcanged from" "{old_note_title} to "{note.title}'
+        
+    
+    def _edit_content(self, note: Note):
+        note.content = input("Type new content: ")
+        return f"Note content changed"
+        
+    def _add_tag(self, note: Note):
+        new_tags = set(input("Type new tags (separated by space): ").strip().split())
+        for tag in new_tags:
+            note.add_tag(tag)
+        return f'Tags: "{', '.join(new_tags)}" added to the note.'
+    
+    def _del_tag(self, note: Note):
+        tag_completer = FuzzyWordCompleter(note.tags)
+        tags_to_delete = set(prompt("Type tags you want to delete (separated by space): ", 
+                                    completer=tag_completer).strip().split())
+        for tag in tags_to_delete:
+            note.delete_tag(tag)
+        return f'Tags: "{', '.join(tags_to_delete)}" deleted from the note.'
+    
+    NOTE_EDIT_COMMANDS = {
+        'title': _edit_title,
+        'content': _edit_content,
+        'addtag': _add_tag,
+        'deltag': _del_tag,
+    }
 
 
+    def edit_note(self, arg):
+        title = self._set_title_str(arg)
+        if title == "" or title == "<<<":
+            return "Operation canceled."
+        if title in self.notes.keys():
+            note = self.notes[title]
+            command_completer = FuzzyWordCompleter(self.NOTE_EDIT_COMMANDS)
+            command = prompt(f"Type what you want to change in note (title, content, addtag, deltag): ", 
+                            completer=command_completer)
+            return self._execute_command(self.NOTE_EDIT_COMMANDS, command, note)
+        return f"Note with title {title} dosen't exist, operation canceled."
+        
+        
+    def delete_note(self, arg):
+        title = self._set_title_str(arg)
+        if title == "" or title == "<<<":
+            return "Operation canceled."
+        if title in self.notes.keys():
+            self.notes.pop(title)
+            return f"Note with title: {title} deleted"
+        return f"Note with title {title} dosen't exist, operation canceled."
 
-    def edit_note(self):
-        pass
 
-
-
-    def delete_note(self):
-        pass
-
-
-
-    def add_tag_to_note(self):
-        pass
-
-
-
-    def sort_notes_by_tag(self):
-        pass
+    # def sort_notes_by_tag(self):
+    #     pass
 
     
 
@@ -101,9 +144,9 @@ class CliNotesInteraction(AbstractNotesInteraction):
     # dict for addressbook menu
     NOTES_MENU_COMMANDS = {
         "add": create_note, 
-        # "edit": edit_record,
+        "edit": edit_note,
         "show": show_notes,
-        # "delete": del_record,
+        "delete": delete_note,
         # "export": export_to_csv, 
         # "import": import_from_csv, 
         # "birthday": show_upcoming_birthday, 
