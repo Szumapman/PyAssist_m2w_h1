@@ -8,10 +8,6 @@ from utility.address import Address
 from utility.record import Record
 
 class AbstractAddressbookInteraction(ABC):
-    abstractmethod
-    def __init__(self, addressbook: AddressBook) -> None:
-        self.addressbook = addressbook
-        
         
     @abstractmethod
     def add_name(self) -> Name:
