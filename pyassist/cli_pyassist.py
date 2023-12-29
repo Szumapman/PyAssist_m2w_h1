@@ -42,7 +42,8 @@ class CliPyassist:
     
     # exit / close program
     def cli_pyassist_exit(self, argument):
-        self.cli_addressbook_interaction.save_addressbook("")
+        self.cli_addressbook_interaction.save_addressbook(None)
+        self.cli_notes_interaction.save_notes(None)
         cowsay.cow("Your data has been saved.\nGood bye!") 
         sys.exit()
     
@@ -129,8 +130,10 @@ class CliPyassist:
 
 def main():
     print(pyfiglet.figlet_format("PyAssist", font = "slant"))
+    # CliPyassist().main_menu()
     cli_pyassist = CliPyassist()
     cli_pyassist.cli_addressbook_interaction.load_addressbook(None)
+    cli_pyassist.cli_notes_interaction.load_notes(None)
     cli_pyassist.main_menu()       
 
 if __name__ == "__main__":
