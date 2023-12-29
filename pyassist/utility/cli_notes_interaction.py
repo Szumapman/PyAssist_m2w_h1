@@ -1,6 +1,7 @@
 import difflib
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import FuzzyWordCompleter
+from pathlib import Path
 
 from utility.abstract_notes_interaction import AbstractNotesInteraction
 from utility.notes import Notes
@@ -117,13 +118,30 @@ class CliNotesInteraction(AbstractNotesInteraction):
         return f"Note with title {title} dosen't exist, operation canceled."
 
 
-    # def sort_notes_by_tag(self):
-    #     pass
+    def sort_notes_by_tag(self):
+        pass
 
     
 
     def search_notes(self):
         pass
+    
+    
+    def save_notes(self, filename):
+        # for the time being, the path to the notes file is hardcoded
+        program_dir = Path(__file__).parent.parent
+        filename = program_dir.joinpath("data/notes.dat")
+        self.notes.save_notes(filename)
+        return "Notes saved."
+    
+    
+    # @_error_handler
+    def load_notes(self, filename):
+        # for the time being, the path to the notes file is hardcoded
+        program_dir = Path(__file__).parent.parent
+        filename = program_dir.joinpath("data/notes.dat")
+        self.notes = self.notes.load_notes(filename)
+        return f"Notes loaded from file {filename}"
     
     
     def exit_program(self, argument):
