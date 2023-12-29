@@ -24,11 +24,6 @@ class AbstractNotesInteraction(ABC):
 
 
     @abstractmethod
-    def add_tag_to_note(self):
-        pass
-
-
-    @abstractmethod
     def sort_notes_by_tag(self):
         pass
 
