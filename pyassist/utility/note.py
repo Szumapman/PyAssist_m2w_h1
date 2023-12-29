@@ -17,14 +17,13 @@ class Note:
 
     def __repr__(self):
         creation_time_str = self.__create_time.strftime("%Y-%m-%d %H:%M:%S")
-        if self.__modified_time:
-            modified_time_str = self.__modified_time.strftime("%Y-%m-%d %H:%M:%S")          
+        modified_time_str = f'Last Modified Time: {self.__modified_time.strftime("%Y-%m-%d %H:%M:%S")}' if self.__modified_time else ""
         tags_str = ", ".join(self.__tags) if self.__tags else "note has no tag"     
         return (
             f"Title: {self.title}\n"
             f"Content: {self.content}\n"
             f"Creation Time: {creation_time_str}\n"
-            f"Last Modified Time: {modified_time_str}\n" if self.__modified_time else ""
+            f"{modified_time_str}\n"
             f"Tags: {tags_str}"
         )
     
