@@ -6,7 +6,9 @@ from prompt_toolkit import prompt
 from prompt_toolkit.completion import FuzzyWordCompleter
 
 from utility.addressbook import AddressBook
+from utility.notes import Notes
 from utility.cli_addressbook_interaction import CliAddressBookInteraction
+from utility.cli_notes_interaction import CliNotesInteraction
 from utility.exit_interrupt import ExitInterrupt
 
 
@@ -27,10 +29,15 @@ class CliPyassist:
     
     def __init__(self) -> None:
         self.cli_addressbook_interaction = CliAddressBookInteraction(AddressBook())
+        self.cli_notes_interaction = CliNotesInteraction(Notes())
 
 
     def addressbook_interaction(self, *args):
         return self.cli_addressbook_interaction.cli_addressbook_menu()
+    
+    
+    def notes_interaction(self, *args):
+        return self.cli_notes_interaction.cli_notes_menu()
     
     
     # exit / close program
@@ -53,6 +60,7 @@ class CliPyassist:
 
     COMMANDS = {
         'addressbook': addressbook_interaction,
+        'notes': notes_interaction,
         'exit': cli_pyassist_exit,
         'help': help,
     }
@@ -60,6 +68,7 @@ class CliPyassist:
     
     COMMANDS_HELP = {
         "addressbook": "open addressbook",
+        "notes": "open notes",
         "exit": "exit from the program",
         "help": "show this menu",
     }
