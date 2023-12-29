@@ -18,8 +18,8 @@ from utility.country import Country
 
 class AddressBook(UserDict):
     """
-    The AddresBook class extends the UserDict class by adding the add_record method
-    and checking that the items added to the dictionary are valid (keys and values based on the Record class).
+    The AddresBook class extends the UserDict class.
+    The class checks whether the elements added to the dictionary are valid (keys and values based on the Record class).
 
     Args:
         UserDict (class): parent class
@@ -38,10 +38,7 @@ class AddressBook(UserDict):
     # Add record to addresbook
     @_value_error
     def add_record(self, record: Record):
-        if isinstance(record, Record):
-            self.data[record.name.value] = record
-        else:
-            raise ValueError    
+        self.data[record.name.value] = record
         
 
     # search in addressbook, return addressbook object that containing records with the query
