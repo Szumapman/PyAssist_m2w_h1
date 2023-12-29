@@ -14,11 +14,6 @@ class AbstractNotesInteraction(ABC):
 
 
     @abstractmethod
-    def choice_note(self):
-        pass
-
-
-    @abstractmethod
     def edit_note(self):
         pass
 
