@@ -287,7 +287,6 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
                             return "Operation canceled."
                         else:
                             number_to_change = self._item_selection(record, data_list, show, type)
-                            print(f'c {number_to_change}')
                             if number_to_change == -1:
                                 return "Operation canceled."
                             data_to_add = self.add_email() if type == "email" else self.add_phone()
@@ -491,6 +490,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         if user_input:
             return self._parse_command(user_input)
         return "", ""
+    
     
     def cli_addressbook_menu(self):
         while True:
