@@ -4,6 +4,8 @@ from utility.street import Street
 from utility.zip_code import ZipCode
 
 class Address:
+    """class for address object
+    """
     def __init__(self, street: Street, city: City, zip_code: ZipCode, country: Country) -> None:
         self.street = street
         self.city = city
