@@ -123,8 +123,13 @@ class CliNotesInteraction(AbstractNotesInteraction):
 
     
 
-    def search_notes(self):
-        pass
+    def search_notes(self, query: str):
+        if query:
+            query = query.strip().lower()
+        else:
+            query = input('Type a query to search for in note: ')
+        return self._display_notes(self.notes.search(query), f'Notes containing: "{query}":')
+        
     
     
     def save_notes(self, filename):
@@ -168,7 +173,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
         # "export": export_to_csv, 
         # "import": import_from_csv, 
         # "birthday": show_upcoming_birthday, 
-        # "search": search,
+        "search": search_notes,
         # "save": save_addresbook, 
         "up": 'up',
         "exit": exit_program,
