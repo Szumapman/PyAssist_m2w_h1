@@ -46,7 +46,7 @@ class Notes(UserDict):
                 query_notes[note.title.value] = note
             if note.tags:
                 for tag in note.tags:
-                    if query in tag.value:
+                    if query in tag:
                         query_notes[note.title.value] = note
         return query_notes    
     
