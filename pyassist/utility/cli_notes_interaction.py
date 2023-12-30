@@ -9,9 +9,23 @@ from utility.note import Note
 from utility.title import Title
 from utility.content import Content
 from utility.exit_interrupt import ExitInterrupt
-
+from utility.invalid_csv_file_structure import InvalidCSVFileStructure
 
 class CliNotesInteraction(AbstractNotesInteraction):
+    
+    # function to handle with errors
+    def _error_handler(func):
+        def wrapper(*args):
+            while True:
+                try:
+                    return func(*args)
+                except FileNotFoundError:
+                    return "Error: Unable to handle with the specified file. Please try again."
+                except InvalidCSVFileStructure:
+                    return "Error: unable to import, invalid file structure."
+                except Exception as e:
+                    return f"Error: {e}. Please try again."
+        return wrapper
     
     def __init__(self, notes: Notes) -> None:
         self.notes = notes
@@ -102,7 +116,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
         if title in self.notes.keys():
             note = self.notes[title]
             command_completer = FuzzyWordCompleter(self.NOTE_EDIT_COMMANDS)
-            command = prompt(f"Type what you want to change in note (title, content, addtag, deltag): ", 
+            command = prompt(f"Type what you want to change in note (title, content, add tag, delete tag): ", 
                             completer=command_completer)
             return self._execute_command(self.NOTE_EDIT_COMMANDS, command, note)
         return f"Note with title {title} dosen't exist, operation canceled."
@@ -143,7 +157,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
             query = input('Type a query to search for in note: ')
         return self._display_notes(self.notes.search(query), f'Notes containing: "{query}":')
         
-    # @_error_handler
+    @_error_handler
     def _import_export_prepare(self, file_name):
         if not file_name:
             file_name = input("Type the filename (e.g., output.csv) or <<< to cancel: ").strip()
@@ -153,7 +167,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
         return program_dir.joinpath("data/"+file_name)
 
     
-    # @_error_handler
+    @_error_handler
     def export_to_csv(self, file_name: str):
         full_path = self._import_export_prepare(file_name)
         if full_path:
@@ -162,7 +176,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
         return "Export cancelled."
     
     
-    # @_error_handler
+    @_error_handler
     def import_from_csv(self, file_name: str):
         full_path = self._import_export_prepare(file_name)
         if full_path:
@@ -170,7 +184,8 @@ class CliNotesInteraction(AbstractNotesInteraction):
             return f"Data imported successfully from {full_path}."
         return "Import cancelled."
 
-    
+
+    @_error_handler
     def save_notes(self, filename):
         # for the time being, the path to the notes file is hardcoded
         program_dir = Path(__file__).parent.parent
@@ -179,7 +194,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
         return "Notes saved."
     
     
-    # @_error_handler
+    @_error_handler
     def load_notes(self, filename):
         # for the time being, the path to the notes file is hardcoded
         program_dir = Path(__file__).parent.parent
@@ -192,7 +207,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
         raise ExitInterrupt
     
     
-    def help(self, argument):
+    def help(self, arg):
         width = 75
         help = f'╔{"═"*width}╗\n' 
         help += "║ {:>22} - {:<48} ║\n".format('command', 'description <optional argument>')   
