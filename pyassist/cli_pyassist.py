@@ -8,6 +8,7 @@ from prompt_toolkit.completion import FuzzyWordCompleter
 from utility.addressbook import AddressBook
 from utility.notes import Notes
 from utility.cli_addressbook_interaction import CliAddressBookInteraction
+from utility.sorter import FileSorter
 from utility.cli_notes_interaction import CliNotesInteraction
 from utility.exit_interrupt import ExitInterrupt
 
@@ -40,6 +41,13 @@ class CliPyassist:
         return self.cli_notes_interaction.cli_notes_menu()
     
     
+    def sort_init(self, folder_path):
+        if not folder_path:
+            folder_path = input("Type the path to the folder whose contents you want to sort: ").strip()
+        sorter = FileSorter()
+        return sorter.sort(folder_path)
+    
+    
     # exit / close program
     def cli_pyassist_exit(self, argument):
         self.cli_addressbook_interaction.save_addressbook(None)
@@ -62,6 +70,7 @@ class CliPyassist:
     COMMANDS = {
         'addressbook': addressbook_interaction,
         'notes': notes_interaction,
+        'sort': sort_init,
         'exit': cli_pyassist_exit,
         'help': help,
     }
@@ -70,6 +79,7 @@ class CliPyassist:
     COMMANDS_HELP = {
         "addressbook": "open addressbook",
         "notes": "open notes",
+        "sort <folder path>": "sort files <in given folder>",
         "exit": "exit from the program",
         "help": "show this menu",
     }
