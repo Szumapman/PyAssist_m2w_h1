@@ -121,7 +121,6 @@ class CliNotesInteraction(AbstractNotesInteraction):
     def sort_notes_by_tag(self, tag: str):
         if tag:
             tags_to_show = set(tag.strip())
-            print(tags_to_show)
         else:
             tags_to_show = set()
             for note in self.notes.values():
@@ -135,9 +134,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
                     notes_with_tag.add_note(note)
             notes_sorted_by_tags += self._display_notes(notes_with_tag, f"\n{'-'*4} {tag} {'-'*4}")
         return notes_sorted_by_tags
-                   
 
-    
 
     def search_notes(self, query: str):
         if query:
@@ -146,7 +143,33 @@ class CliNotesInteraction(AbstractNotesInteraction):
             query = input('Type a query to search for in note: ')
         return self._display_notes(self.notes.search(query), f'Notes containing: "{query}":')
         
+    # @_error_handler
+    def _import_export_prepare(self, file_name):
+        if not file_name:
+            file_name = input("Type the filename (e.g., output.csv) or <<< to cancel: ").strip()
+        if file_name == "<<<" or file_name == "":
+            return None
+        program_dir = Path(__file__).parent.parent
+        return program_dir.joinpath("data/"+file_name)
+
     
+    # @_error_handler
+    def export_to_csv(self, file_name: str):
+        full_path = self._import_export_prepare(file_name)
+        if full_path:
+            self.notes.export_to_csv(full_path)
+            return f"Data exported successfully to {full_path}."
+        return "Export cancelled."
+    
+    
+    # @_error_handler
+    def import_from_csv(self, file_name: str):
+        full_path = self._import_export_prepare(file_name)
+        if full_path:
+            self.notes.import_from_csv(full_path)
+            return f"Data imported successfully from {full_path}."
+        return "Import cancelled."
+
     
     def save_notes(self, filename):
         # for the time being, the path to the notes file is hardcoded
@@ -187,11 +210,10 @@ class CliNotesInteraction(AbstractNotesInteraction):
         "show": show_notes,
         "delete": delete_note,
         "sort": sort_notes_by_tag,
-        # "export": export_to_csv, 
-        # "import": import_from_csv, 
-        # "birthday": show_upcoming_birthday, 
+        "export": export_to_csv, 
+        "import": import_from_csv, 
         "search": search_notes,
-        # "save": save_addresbook, 
+        "save": save_notes, 
         "up": 'up',
         "exit": exit_program,
         "help": help,
