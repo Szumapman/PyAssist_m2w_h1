@@ -6,6 +6,7 @@ from collections import UserDict
 from utility.note import Note
 from utility.title import Title
 from utility.content import Content
+from utility.invalid_csv_file_structure import InvalidCSVFileStructure
 
 class Notes(UserDict):
     """
@@ -70,6 +71,8 @@ class Notes(UserDict):
     def import_from_csv(self, file_path: Path):
         with open(file_path, 'r', newline='') as fh:
             reader = csv.DictReader(fh)
+            if ['title', 'content', 'tags'] != reader.fieldnames:
+                raise InvalidCSVFileStructure
             for row in reader:
                 title = row['title']
                 content = row['content']
