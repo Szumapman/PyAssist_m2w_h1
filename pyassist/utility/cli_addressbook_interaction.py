@@ -17,6 +17,7 @@ from utility.zip_code import ZipCode
 from utility.country import Country
 from utility.record import Record
 from utility.exit_interrupt import ExitInterrupt
+from utility.invalid_csv_file_structure import InvalidCSVFileStructure
 
 
 class CliAddressBookInteraction(AbstractAddressbookInteraction):
@@ -45,11 +46,9 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
                 except FutureDateError:
                     print("You can't use a future date as a birthday, try again.")
                 except FileNotFoundError:
-                    return "Error: Unable to find the specified file. Please try again."
-                    # if func.__name__ == "export_to_csv":
-                    #     return "Error: Unable to find the specified file. Please try again."
-                    # if func.__name__ == "import_from_csv":
-                    #     return "Error: Unable to find the specified file. Please try again."
+                    return "Error: Unable to handle with the specified file. Please try again."
+                except InvalidCSVFileStructure:
+                    return "Error: unable to import, invalid file structure."
                 except Exception as e:
                     return f"Error: {e}. Please try again."
         return wrapper
