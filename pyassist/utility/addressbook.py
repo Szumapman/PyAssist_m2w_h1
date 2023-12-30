@@ -14,6 +14,7 @@ from utility.street import Street
 from utility.city import City
 from utility.zip_code import ZipCode
 from utility.country import Country
+from utility.invalid_csv_file_structure import InvalidCSVFileStructure
 
 
 class AddressBook(UserDict):
@@ -132,6 +133,8 @@ class AddressBook(UserDict):
     def import_from_csv(self, filename):
         with open(filename, 'r', newline='') as fh:
             reader = csv.DictReader(fh)
+            if ['name', 'phones', 'emails', 'birthday', 'street', 'city', 'zip_code', 'country'] != reader.fieldnames:
+                raise InvalidCSVFileStructure
             for row in reader:
                 name = row['name']
                 phones = row['phones'].split('|')
