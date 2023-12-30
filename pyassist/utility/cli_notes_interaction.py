@@ -118,8 +118,24 @@ class CliNotesInteraction(AbstractNotesInteraction):
         return f"Note with title {title} dosen't exist, operation canceled."
 
 
-    def sort_notes_by_tag(self):
-        pass
+    def sort_notes_by_tag(self, tag: str):
+        if tag:
+            tags_to_show = set(tag.strip())
+            print(tags_to_show)
+        else:
+            tags_to_show = set()
+            for note in self.notes.values():
+                tags_to_show = tags_to_show | note.tags
+            
+        notes_sorted_by_tags = "Notes sorted by tag: "
+        for tag in tags_to_show:
+            notes_with_tag = Notes()
+            for note in self.notes.values():
+                if tag in note.tags:
+                    notes_with_tag.add_note(note)
+            notes_sorted_by_tags += self._display_notes(notes_with_tag, f"\n{'-'*4} {tag} {'-'*4}")
+        return notes_sorted_by_tags
+                   
 
     
 
@@ -170,6 +186,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
         "edit": edit_note,
         "show": show_notes,
         "delete": delete_note,
+        "sort": sort_notes_by_tag,
         # "export": export_to_csv, 
         # "import": import_from_csv, 
         # "birthday": show_upcoming_birthday, 
