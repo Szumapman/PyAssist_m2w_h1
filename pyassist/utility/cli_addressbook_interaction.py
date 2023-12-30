@@ -354,15 +354,13 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
     
     
     @_error_handler
-    def _import_export_prepare(self,argument):
-        if argument:
-            filename = argument
-        else:
-            filename = input("Type the filename (e.g., output.csv) or <<< to cancel: ").strip()       
-        if filename == "<<<" or filename == "":
+    def _import_export_prepare(self, file_name):
+        if not file_name:
+            file_name = input("Type the filename (e.g., output.csv) or <<< to cancel: ").strip()
+        if file_name == "<<<" or file_name == "":
             return None
         program_dir = Path(__file__).parent.parent
-        return program_dir.joinpath("data/"+filename)
+        return program_dir.joinpath("data/"+file_name)
     
     
     @_error_handler
@@ -381,7 +379,6 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
             self.addressbook.import_from_csv(full_path)
             return f"Data imported successfully from {full_path}."
         return "Import cancelled."
-
 
 
     @_error_handler
@@ -427,7 +424,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         "import": import_from_csv, 
         "birthday": show_upcoming_birthday, 
         "search": search,
-        # "save": save_addresbook, 
+        "save": save_addressbook, 
         "up": 'up',
         "exit": exit_program,
         "help": help,
@@ -444,7 +441,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         "import <file name>": "import addressbook from csv file <file name>", 
         "birthday <days>": "show birthdays in upcoming days <days>", 
         "search <query>": "search in addressbook <query>",
-        # "save": save_addresbook, 
+        "save": "save addresbook", 
         "up": 'back tu main menu',
         "exit": "exit from the program",
         "help": "show this menu",
