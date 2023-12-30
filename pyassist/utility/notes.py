@@ -1,8 +1,11 @@
 import pickle
+import csv
 from pathlib import Path
 from collections import UserDict
 
 from utility.note import Note
+from utility.title import Title
+from utility.content import Content
 
 class Notes(UserDict):
     """
@@ -49,6 +52,31 @@ class Notes(UserDict):
                     if query in tag:
                         query_notes[note.title.value] = note
         return query_notes    
+    
+    
+    def export_to_csv(self, file_path: Path):
+        if len(self.data) > 0:
+            with open(file_path, 'w', newline='') as fh:
+                field_names = ['title', 'content', 'tags']
+                writer = csv.DictWriter(fh, fieldnames=field_names)
+                writer.writeheader()
+                for note in self.data.values():
+                    note_dict = {'title': note.title.value}
+                    note_dict['content'] = note.content.value
+                    note_dict['tags'] = '|'.join(note.tags)
+                    writer.writerow(note_dict)
+    
+    
+    def import_from_csv(self, file_path: Path):
+        with open(file_path, 'r', newline='') as fh:
+            reader = csv.DictReader(fh)
+            for row in reader:
+                title = row['title']
+                content = row['content']
+                tags = set(row['tags'].split('|'))
+                if title not in self.keys():
+                    self.add_note(Note(Title(title), Content(content), tags))
+
     
     # method to save notes to file
     def save_notes(self, filename):
