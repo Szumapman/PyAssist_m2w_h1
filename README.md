@@ -142,7 +142,7 @@ Ta aplikacja jest udostępniana na [licencji MIT](https://github.com/Szumapman/P
 
 Jeśli masz pytania, sugestie lub chciałbyś się skontaktować w sprawie aplikacji:
 
-- GitHub Paweł Szumański: [Szumapman](https://github.com/Szumapman)
+- GitHub [Paweł Szumański](https://github.com/Szumapman)
 
 **_Ten projekt bazuje cześciowo na:_ [PyAssist 1.0](https://github.com/Szumapman/PyAssist)**
 
@@ -280,7 +280,7 @@ This application is made available under the [MIT licence](https://github.com/Sz
 
 If you have any questions, suggestions or would like to get in touch about the application:
 
-- GitHub Paweł Szumański: [Szumapman](https://github.com/Szumapman)
+- GitHub [Paweł Szumański](https://github.com/Szumapman)
  
 **_This project is based in part on:_ [PyAssist 1.0](https://github.com/Szumapman/PyAssist)**
 
