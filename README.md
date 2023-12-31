@@ -119,7 +119,11 @@ cd PyAssist
 
 3. Zainstaluj program:
 
-Aby zainstalować pakiet z kodu źródłowego, wykonaj w konsoli polecenie ```pip install -e .``` w folderze, w którym znajduje się plik setup.py.
+Aby zainstalować pakiet z kodu źródłowego, wykonaj w konsoli polecenie 
+```
+pip install -e .
+```
+w folderze, w którym znajduje się plik setup.py.
 
 ## Uruchomienie programu
 
