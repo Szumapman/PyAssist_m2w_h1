@@ -7,7 +7,11 @@ from datetime import datetime
 class FileSorter:
     
     def __init__(self) -> None:
-        self.report_file_path = report_file_path = Path.home().joinpath("PyAssist_sort_report.txt")
+        if not Path.exists(Path.home().joinpath("PyAssist")):
+            os.mkdir(Path.home().joinpath("PyAssist"))
+        self.report_file_path = Path.home().joinpath("PyAssist/sort_report.txt")
+        print(self.report_file_path)
+        
         # auxiliary dictionaries to store data on processed files
         self.extensions = {
             "images": set(),
