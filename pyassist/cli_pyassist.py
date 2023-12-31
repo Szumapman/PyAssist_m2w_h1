@@ -140,7 +140,6 @@ class CliPyassist:
 
 def main():
     print(pyfiglet.figlet_format("PyAssist", font = "slant"))
-    # CliPyassist().main_menu()
     cli_pyassist = CliPyassist()
     cli_pyassist.cli_addressbook_interaction.load_addressbook(None)
     cli_pyassist.cli_notes_interaction.load_notes(None)
