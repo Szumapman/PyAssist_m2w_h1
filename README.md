@@ -1,7 +1,7 @@
 ![PyAssist](https://github.com/Szumapman/PyAssist_m2w_h1/assets/36560916/57e54e7f-c609-4e50-9432-a63c3ecd677d)
 # PyAssist
-## version 2.1 (2wh1)
-### Ten projekt bazuje cześciowo na: [PyAssist 1.0](https://github.com/Szumapman/PyAssist)
+### version 2.1 (2wh1)
+
 
 > PyAssist to narzędzie wiersza poleceń oparte na języku Python, które zostało zaprojektowane w celu efektywnego zarządzania książką adresową i notatkami. Dzięki PyAssist możesz łatwo dodawać, edytować, usuwać, wyszukiwać i eksportować rekordy w swojej książce adresowej. Narzędzie umożliwia również sprawne zarządzanie notatkami, oferując różnorodne funkcje. Dodatkowo pozwala ono na błyskawiczne uporządkowanie wskazanego katalogu poprzez segregację znajdujących się w nim i jego podkatalogach plików.
 
@@ -144,8 +144,8 @@ Jeśli masz pytania, sugestie lub chciałbyś się skontaktować w sprawie aplik
 
 - GitHub Paweł Szumański: [Szumapman](https://github.com/Szumapman)
 
-
-### Ten plik README.md bazuje na swoim odpowiedniku z PyAssist 1.0 dostępnym tu: [PyAssist 1.0 README.md](https://github.com/Szumapman/PyAssist/blob/main/README.md)
+**_Ten projekt bazuje cześciowo na:_ [PyAssist 1.0](https://github.com/Szumapman/PyAssist)**
+**_Ten plik README.md bazuje na swoim odpowiedniku z PyAssist 1.0 dostępnym tu:_ [PyAssist 1.0 README.md](https://github.com/Szumapman/PyAssist/blob/main/README.md)**
 
 
 ## Table of Contents
@@ -281,5 +281,5 @@ If you have any questions, suggestions or would like to get in touch about the a
 
 - GitHub Paweł Szumański: [Szumapman](https://github.com/Szumapman)
  
-
-### This README.md file is based on its PyAssist 1.0 counterpart available here: [PyAssist 1.0 README.md](https://github.com/Szumapman/PyAssist/blob/main/README.md)
+**_This project is based in part on:_ [PyAssist 1.0](https://github.com/Szumapman/PyAssist)**
+**_This README.md file is based on its PyAssist 1.0 counterpart available here:_ [PyAssist 1.0 README.md](https://github.com/Szumapman/PyAssist/blob/main/README.md)**
