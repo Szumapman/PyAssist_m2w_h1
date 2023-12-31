@@ -1,9 +1,4 @@
-    ____        ___              _      __
-   / __ \__  __/   |  __________(_)____/ /_
-  / /_/ / / / / /| | / ___/ ___/ / ___/ __/
- / ____/ /_/ / ___ |(__  |__  ) (__  ) /_
-/_/    \__, /_/  |_/____/____/_/____/\__/
-      /____/
+![PyAssist](https://github.com/Szumapman/PyAssist_m2w_h1/assets/36560916/57e54e7f-c609-4e50-9432-a63c3ecd677d)
 # PyAssist
 ## version 2.1 (2wh1)
 ### Ten projekt bazuje cześciowo na: [PyAssist 1.0](https://github.com/Szumapman/PyAssist)
