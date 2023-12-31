@@ -145,6 +145,7 @@ Jeśli masz pytania, sugestie lub chciałbyś się skontaktować w sprawie aplik
 - GitHub Paweł Szumański: [Szumapman](https://github.com/Szumapman)
 
 **_Ten projekt bazuje cześciowo na:_ [PyAssist 1.0](https://github.com/Szumapman/PyAssist)**
+
 **_Ten plik README.md bazuje na swoim odpowiedniku z PyAssist 1.0 dostępnym tu:_ [PyAssist 1.0 README.md](https://github.com/Szumapman/PyAssist/blob/main/README.md)**
 
 
@@ -282,4 +283,5 @@ If you have any questions, suggestions or would like to get in touch about the a
 - GitHub Paweł Szumański: [Szumapman](https://github.com/Szumapman)
  
 **_This project is based in part on:_ [PyAssist 1.0](https://github.com/Szumapman/PyAssist)**
+
 **_This README.md file is based on its PyAssist 1.0 counterpart available here:_ [PyAssist 1.0 README.md](https://github.com/Szumapman/PyAssist/blob/main/README.md)**
