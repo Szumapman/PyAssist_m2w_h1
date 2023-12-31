@@ -16,13 +16,13 @@ setup(
     packages=packages,
     package_dir={"": "pyassist"},
     install_requires=[
-        'SpeechRecognition',
-        'pyttsx3',
-        'pyaudio',
+        # 'SpeechRecognition', # Modules used for speech recognition
+        # 'pyttsx3',           # and changing text to speech.
+        # 'pyaudio',           # Currently disabled.
         'pyfiglet',
         'cowsay',
         'prompt_toolkit',
         'validator-collection',
     ],
-    entry_points={'console_scripts': ['pyassist = pyassist:main']}
+    entry_points={'console_scripts': ['pyassist = cli_pyassist:main']}
 )
