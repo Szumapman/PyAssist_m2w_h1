@@ -11,9 +11,10 @@ from utility.cli_addressbook_interaction import CliAddressBookInteraction
 from utility.sorter import FileSorter
 from utility.cli_notes_interaction import CliNotesInteraction
 from utility.exit_interrupt import ExitInterrupt
+from abstract_pyassist import AbstractPyassist
 
 
-class CliPyassist:
+class CliPyassist(AbstractPyassist):
     
     # function to handle with errors
     def _error_handler(func):
