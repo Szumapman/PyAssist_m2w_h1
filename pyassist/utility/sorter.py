@@ -4,14 +4,14 @@ import re
 from pathlib import Path
 from datetime import datetime
 
+
 class FileSorter:
-    
     def __init__(self) -> None:
         if not Path.exists(Path.home().joinpath("PyAssist")):
             os.mkdir(Path.home().joinpath("PyAssist"))
         self.report_file_path = Path.home().joinpath("PyAssist/sort_report.txt")
         print(self.report_file_path)
-        
+
         # auxiliary dictionaries to store data on processed files
         self.extensions = {
             "images": set(),
@@ -28,25 +28,24 @@ class FileSorter:
             "video": [],
             "archives": [],
             "unsorted": [],
-        }  
+        }
 
-        
     def _sort_folder(self, path: str):
         """
-        The method sorts files in the directory given as an argument and recursively its subdirectories (excluding excluded e.g. documents). 
-        Empty directories are deleted. 
-        File names are normalized (all characters other than letters and numbers and _ ) are replaced with: _ . 
-        If a file or directory with the given name already exists, the character _n (where n is the next number) is added to the name. 
-        Files with specified extensions are moved to appropriate (created as needed) directories in the directory in which they are located 
+        The method sorts files in the directory given as an argument and recursively its subdirectories (excluding excluded e.g. documents).
+        Empty directories are deleted.
+        File names are normalized (all characters other than letters and numbers and _ ) are replaced with: _ .
+        If a file or directory with the given name already exists, the character _n (where n is the next number) is added to the name.
+        Files with specified extensions are moved to appropriate (created as needed) directories in the directory in which they are located
         (e.g., files with .doc extensions are moved to the documents folder, files with .zip extensions are moved to the archives directory, etc.)
         Files with unknown extensions are not moved, but have a normalized name.
-        Archives, after being moved to the archives directory, are unzipped to the directory with the name of the archive being unzipped 
+        Archives, after being moved to the archives directory, are unzipped to the directory with the name of the archive being unzipped
         (without the extension).
         For each directory, the function saves in the report file (whose name is passed as the second argument), the results of its work.
 
         Directories to which files with given extensions are moved:
         images -> .jpeg | .png | .jpg | .svg
-        video -> .avi | .mp4 | .mov | .mkv 
+        video -> .avi | .mp4 | .mov | .mkv
         documents -> .doc | .docx | .txt | .pdf | .xlsx | .pptx
         audio -> .mp3 | .ogg | .wav | .amr
         archives -> .zip | .gz | .tar
@@ -57,7 +56,7 @@ class FileSorter:
         :type report_file_path: str
         :raise FileNotFoundError: if source path lead to non-existing directory
         :raise NotADirectoryError: if source path lead to file
-        :raise FileExistsError: if too many files versions (over 1 000 000) exists in folder 
+        :raise FileExistsError: if too many files versions (over 1 000 000) exists in folder
         """
         # list of files and directories located in a given directory
         files = list(os.scandir(path))
@@ -69,16 +68,24 @@ class FileSorter:
                 if len(temp_list) == 0:
                     os.rmdir(file.path)
                 # skip directories which are excluded from sorting
-                if not file.name in ["images", "video", "documents", "audio", "archives"]:
+                if not file.name in [
+                    "images",
+                    "video",
+                    "documents",
+                    "audio",
+                    "archives",
+                ]:
                     dir_name = self._normalize(file.name)
-                    dir_path = os.path.join(path, dir_name) # Path(path, dir_name)
+                    dir_path = os.path.join(path, dir_name)  # Path(path, dir_name)
                     # I check if there was a change in the directory name after using the normalize function, and if so I move the contents to the directory with the new name
                     if dir_name != file.name:
                         # I check if a directory does not already exist that would conflict with the new name, if so I add a numbered version
                         for entry in files:
                             if dir_name == entry.name:
-                                dir_path = self._set_dest_path(os.path.join(path, dir_name))
-                    
+                                dir_path = self._set_dest_path(
+                                    os.path.join(path, dir_name)
+                                )
+
                         # I move the contents of the renamed directory
                         try:
                             os.renames(os.path.join(path, file.name, dir_path))
@@ -87,8 +94,8 @@ class FileSorter:
                                 f"Directory {dir_name} has not been copied, because too many directories with that name already exist."
                             )
                             continue
-                    
-                    # recursive function call for non-empty directories       
+
+                    # recursive function call for non-empty directories
                     self._sort_folder(dir_path)
 
             # file operations
@@ -109,14 +116,17 @@ class FileSorter:
                         file_type = "archives"
                         # archive is immediately extracted to the folder: archives/"archive name without extension"
                         shutil.unpack_archive(
-                            os.path.join(path, file.name), os.path.join(path, file_type, file_name)
+                            os.path.join(path, file.name),
+                            os.path.join(path, file_type, file_name),
                         )
                     case _:
                         file_type = "unsorted"
 
                 # I move files (except those with unaccounted-for extensions) to the appropriate directories
                 if file_type != "unsorted":
-                    dest_path = self._set_dest_path(os.path.join(path, file_type), file_name, ext)
+                    dest_path = self._set_dest_path(
+                        os.path.join(path, file_type), file_name, ext
+                    )
                     try:
                         os.renames(os.path.join(path, file.name), dest_path)
                     except FileExistsError:
@@ -132,20 +142,19 @@ class FileSorter:
                         temp_list.append(os.path.join(path, file_type, file.name))
                     else:
                         temp_list.append(
-                        f"{os.path.join(path, file_type, file.name)} has moved to: {dest_path}"
+                            f"{os.path.join(path, file_type, file.name)} has moved to: {dest_path}"
                         )
                     self.paths.update({file_type: temp_list})
                 if self.extensions.get(file_type) != None:
                     temp_set = self.extensions.get(file_type)
                     temp_set.add(ext)
                     self.extensions.update({file_type: temp_set})
-        
+
         self._create_report(path)
-            
 
     def _normalize(self, name: str) -> str:
         """
-        The function normalizes the passed string so that Polish characters are converted to Latin characters, 
+        The function normalizes the passed string so that Polish characters are converted to Latin characters,
         and characters other than Latin letters, digits and _ , are converted to _ .
 
         :param name: The variable with string to normalize
@@ -178,7 +187,6 @@ class FileSorter:
         # I change other disallowed characters in the name to the _ character
         normalized_name = re.sub(r"\W+", "_", normalized_name)
         return normalized_name
-        
 
     def _set_dest_path(self, path: str, file_name: str, ext="") -> str:
         """
@@ -188,7 +196,7 @@ class FileSorter:
         :type path: str
         :param file_name: Destination directory/file (without extension) name
         :type file_name: str
-        :param ext: The extension for file or empty for directory 
+        :param ext: The extension for file or empty for directory
         :type ext: str
         :rtype: str
         """
@@ -218,15 +226,17 @@ class FileSorter:
         """
         now = datetime.now()
         with open(self.report_file_path, "a") as fo:
-            fo.write(f"{3*'>'} Activity report for directory: {path} - {now.strftime('%Y-%m-%d %H:%M:%S')}:\n")
-        
+            fo.write(
+                f"{3*'>'} Activity report for directory: {path} - {now.strftime('%Y-%m-%d %H:%M:%S')}:\n"
+            )
+
             # I check to see if there will be information in the given directory to write in the report
             contain_data_to_report = False
             for value in self.extensions.values():
                 if len(value) > 0:
                     contain_data_to_report = True
             # if there is data to record I save it
-            if contain_data_to_report:      
+            if contain_data_to_report:
                 fo.write(f"Extensions of checked files by category:\n")
                 no_transfered_data = True
                 for key, values in self.extensions.items():
@@ -249,10 +259,9 @@ class FileSorter:
             else:
                 fo.write("Nothing to sort.\n")
 
-
     def sort(self, path: str):
         if not os.path.exists(os.path.dirname(path)) or not os.path.isdir(path):
             return f'"{path}" is not a proper folder path, try again.'
         # the name of the file to which the report is saved (the report is saved in the main folder of sorted directory)
-        self._sort_folder(path)    
+        self._sort_folder(path)
         return f"I've sorted your files in {path}.\nReport file is here: {self.report_file_path}"

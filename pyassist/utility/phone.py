@@ -24,6 +24,7 @@ class Phone(Field):
                 raise ValueError
             else:
                 return func(self, value)
+
         return inner
 
     @_value_error

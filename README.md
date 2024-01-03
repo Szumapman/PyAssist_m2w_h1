@@ -1,12 +1,12 @@
 ![PyAssist](https://github.com/Szumapman/PyAssist_m2w_h1/assets/36560916/57e54e7f-c609-4e50-9432-a63c3ecd677d)
-# _PyAssist_
-### version 2.1 (2wh1)
 
+# _PyAssist_
+
+### version 2.1 (2wh1)
 
 > PyAssist to narzędzie wiersza poleceń oparte na języku Python, które zostało zaprojektowane w celu efektywnego zarządzania książką adresową i notatkami. Dzięki PyAssist możesz łatwo dodawać, edytować, usuwać, wyszukiwać i eksportować rekordy w swojej książce adresowej. Narzędzie umożliwia również sprawne zarządzanie notatkami, oferując różnorodne funkcje. Dodatkowo pozwala ono na błyskawiczne uporządkowanie wskazanego katalogu poprzez segregację znajdujących się w nim i jego podkatalogach plików.
 
 > PyAssist is a Python-based command-line utility designed to assist you in managing your address book and notes efficiently. With PyAssist, you can easily add, edit, delete, search, and export records in your address book. The tool also enables efficient management of notes, offering a variety of functions. In addition, it allows you to instantly organize the indicated directory by segregating the files in it and its subdirectories.
-
 
 ## Język / Language
 
@@ -119,10 +119,12 @@ cd PyAssist
 
 3. Zainstaluj program:
 
-Aby zainstalować pakiet z kodu źródłowego, wykonaj w konsoli polecenie 
+Aby zainstalować pakiet z kodu źródłowego, wykonaj w konsoli polecenie
+
 ```
 pip install -e .
 ```
+
 w folderze, w którym znajduje się plik setup.py.
 
 ## Uruchomienie programu
@@ -141,7 +143,6 @@ Ta aplikacja jest udostępniana na [licencji MIT](https://github.com/Szumapman/P
 
 - 'Paweł Szumański'
 
-
 ## Kontakt
 
 Jeśli masz pytania, sugestie lub chciałbyś się skontaktować w sprawie aplikacji:
@@ -151,7 +152,6 @@ Jeśli masz pytania, sugestie lub chciałbyś się skontaktować w sprawie aplik
 **_Ten projekt bazuje cześciowo na:_ [PyAssist 1.0](https://github.com/Szumapman/PyAssist)**
 
 **_Ten plik README.md bazuje na swoim odpowiedniku z PyAssist 1.0 dostępnym tu:_ [PyAssist 1.0 README.md](https://github.com/Szumapman/PyAssist/blob/main/README.md)**
-
 
 ## Table of Contents
 
@@ -180,7 +180,6 @@ The primary goals of PyAssist include:
 ### Motivation
 
 The motivation behind the project stems from the need for a versatile and user-friendly command-line tool for personal information management. PyAssist was developed to offer an intuitive interface for handling contacts and notes, allowing users to focus on productivity rather than dealing with cumbersome organizational tasks.
-
 
 ### Main Menu
 
@@ -228,12 +227,11 @@ In the notes menu, you can manage your notes:
 
 ### Sort Files
 
-PyAssist allows you to sort files in a specific directory. Simply select the "sort" option from the main menu and enter the path to that directory. 
+PyAssist allows you to sort files in a specific directory. Simply select the "sort" option from the main menu and enter the path to that directory.
 
 ### Exit
 
 To exit PyAssist and save your data, choose the "exit" option.
-
 
 ## Setup
 
@@ -279,13 +277,12 @@ This application is made available under the [MIT licence](https://github.com/Sz
 
 - 'Paweł Szumański'
 
-
 ## Contact
 
 If you have any questions, suggestions or would like to get in touch about the application:
 
 - GitHub [Paweł Szumański](https://github.com/Szumapman)
- 
+
 **_This project is based in part on:_ [PyAssist 1.0](https://github.com/Szumapman/PyAssist)**
 
 **_This README.md file is based on its PyAssist 1.0 counterpart available here:_ [PyAssist 1.0 README.md](https://github.com/Szumapman/PyAssist/blob/main/README.md)**

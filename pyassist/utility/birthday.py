@@ -27,7 +27,6 @@ class Birthday(Field):
     def __init__(self, value=None) -> None:
         self.value = self._set_birthdate(value)
 
-
     # helper method to check and set birthday value
     def _set_birthdate(self, value):
         if value is None:
@@ -43,9 +42,7 @@ class Birthday(Field):
         if birthday is not None and birthday > datetime.now().date():
             raise FutureDateError
         return birthday
-    
-    
+
     # overridden method __repr__
     def __repr__(self) -> str:
         return self._value.strftime("%A %d-%m-%Y")
-    
