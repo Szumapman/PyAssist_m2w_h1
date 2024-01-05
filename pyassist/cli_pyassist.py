@@ -28,9 +28,13 @@ class CliPyassist(AbstractPyassist):
 
         return wrapper
 
-    def __init__(self) -> None:
-        self.cli_addressbook_interaction = CliAddressBookInteraction(AddressBook())
-        self.cli_notes_interaction = CliNotesInteraction(Notes())
+    def __init__(
+        self,
+        cli_addressbook_interaction: CliAddressBookInteraction,
+        cli_notes_interaction: CliNotesInteraction,
+    ) -> None:
+        self.cli_addressbook_interaction = cli_addressbook_interaction
+        self.cli_notes_interaction = cli_notes_interaction
 
     def addressbook_interaction(self, *args):
         return self.cli_addressbook_interaction.cli_addressbook_menu()
@@ -132,7 +136,9 @@ class CliPyassist(AbstractPyassist):
 
 def main():
     print(pyfiglet.figlet_format("PyAssist", font="slant"))
-    cli_pyassist = CliPyassist()
+    cli_pyassist = CliPyassist(
+        CliAddressBookInteraction(AddressBook()), CliNotesInteraction(Notes())
+    )
     cli_pyassist.cli_addressbook_interaction.load_addressbook(None)
     cli_pyassist.cli_notes_interaction.load_notes(None)
     cli_pyassist.main_menu()
