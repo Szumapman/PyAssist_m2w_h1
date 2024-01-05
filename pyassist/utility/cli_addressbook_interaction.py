@@ -411,17 +411,11 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
 
     @_error_handler
     def save_addressbook(self, filename):
-        # for the time being, the path to the addressbook file is hardcoded
-        program_dir = Path(__file__).parent.parent
-        filename = program_dir.joinpath("data/addresbook.dat")
         self.addressbook.save_addresbook(filename)
         return "Addressbook saved."
 
     @_error_handler
     def load_addressbook(self, filename):
-        # for the time being, the path to the addressbook file is hardcoded
-        program_dir = Path(__file__).parent.parent
-        filename = program_dir.joinpath("data/addresbook.dat")
         self.addressbook = self.addressbook.load_addresbook(filename)
         return f"Addressbook loaded from file {filename}"
 

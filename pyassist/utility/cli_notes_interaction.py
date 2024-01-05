@@ -195,17 +195,11 @@ class CliNotesInteraction(AbstractNotesInteraction):
 
     @_error_handler
     def save_notes(self, filename):
-        # for the time being, the path to the notes file is hardcoded
-        program_dir = Path(__file__).parent.parent
-        filename = program_dir.joinpath("data/notes.dat")
         self.notes.save_notes(filename)
         return "Notes saved."
 
     @_error_handler
     def load_notes(self, filename):
-        # for the time being, the path to the notes file is hardcoded
-        program_dir = Path(__file__).parent.parent
-        filename = program_dir.joinpath("data/notes.dat")
         self.notes = self.notes.load_notes(filename)
         return f"Notes loaded from file {filename}"
 

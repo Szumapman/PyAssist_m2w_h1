@@ -4,6 +4,7 @@ import cowsay
 import sys
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import FuzzyWordCompleter
+from pathlib import Path
 
 from utility.addressbook import AddressBook
 from utility.notes import Notes
@@ -52,8 +53,12 @@ class CliPyassist(AbstractPyassist):
 
     # exit / close program
     def cli_pyassist_exit(self, argument):
-        self.cli_addressbook_interaction.save_addressbook(None)
-        self.cli_notes_interaction.save_notes(None)
+        # for the time being, the path to the addressbook and notes files are hardcoded
+        program_dir = Path(__file__).parent
+        addressbook_filename = program_dir.joinpath("data/addresbook.dat")
+        notes_filename = program_dir.joinpath("data/notes.dat")
+        self.cli_addressbook_interaction.save_addressbook(addressbook_filename)
+        self.cli_notes_interaction.save_notes(notes_filename)
         cowsay.cow("Your data has been saved.\nGood bye!")
         sys.exit()
 
@@ -139,8 +144,12 @@ def main():
     cli_pyassist = CliPyassist(
         CliAddressBookInteraction(AddressBook()), CliNotesInteraction(Notes())
     )
-    cli_pyassist.cli_addressbook_interaction.load_addressbook(None)
-    cli_pyassist.cli_notes_interaction.load_notes(None)
+    # for the time being, the path to the addressbook and notes files are hardcoded
+    program_dir = Path(__file__).parent
+    addressbook_filename = program_dir.joinpath("data/addresbook.dat")
+    notes_filename = program_dir.joinpath("data/notes.dat")
+    cli_pyassist.cli_addressbook_interaction.load_addressbook(addressbook_filename)
+    cli_pyassist.cli_notes_interaction.load_notes(notes_filename)
     cli_pyassist.main_menu()
 
 
