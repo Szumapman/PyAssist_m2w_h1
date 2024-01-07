@@ -55,7 +55,7 @@ class CliPyassist(AbstractPyassist):
     def cli_pyassist_exit(self, argument):
         # for the time being, the path to the addressbook and notes files are hardcoded
         program_dir = Path(__file__).parent
-        addressbook_filename = program_dir.joinpath("data/addresbook.dat")
+        addressbook_filename = program_dir.joinpath("data/addressbook.dat")
         notes_filename = program_dir.joinpath("data/notes.dat")
         self.cli_addressbook_interaction.save_addressbook(addressbook_filename)
         self.cli_notes_interaction.save_notes(notes_filename)
@@ -65,13 +65,13 @@ class CliPyassist(AbstractPyassist):
     # show help
     def help(self, argument):
         width = 60
-        help = f'╔{"═"*width}╗\n'
-        help += "║ {:>12} - {:<43} ║\n".format("command", "description")
-        help += f'╠{"═"*width}╣\n'
+        help_table = f'╔{"═" * width}╗\n'
+        help_table += "║ {:>12} - {:<43} ║\n".format("command", "description")
+        help_table += f'╠{"═" * width}╣\n'
         for command, description in self.COMMANDS_HELP.items():
-            help += "║ {:>12} - {:<43} ║\n".format(command, description)
-        help += f'╚{"═"*width}╝'
-        return help
+            help_table += "║ {:>12} - {:<43} ║\n".format(command, description)
+        help_table += f'╚{"═" * width}╝'
+        return help_table
 
     COMMANDS = {
         "addressbook": addressbook_interaction,
@@ -90,7 +90,8 @@ class CliPyassist(AbstractPyassist):
     }
 
     # a function that parses user input commands
-    def _parse_command(self, user_input: str) -> (str, str):
+    @staticmethod
+    def _parse_command(user_input: str) -> (str, str):
         """
         Parse user input command
 
@@ -118,7 +119,6 @@ class CliPyassist(AbstractPyassist):
         """Function to execute user commands
 
         Args:
-            menu_commands (dict): dict for menu-specific commands
             cmd (str): user command
             argument (str): argument from user input
 
@@ -146,7 +146,7 @@ def main():
     )
     # for the time being, the path to the addressbook and notes files are hardcoded
     program_dir = Path(__file__).parent
-    addressbook_filename = program_dir.joinpath("data/addresbook.dat")
+    addressbook_filename = program_dir.joinpath("data/addressbook.dat")
     notes_filename = program_dir.joinpath("data/notes.dat")
     cli_pyassist.cli_addressbook_interaction.load_addressbook(addressbook_filename)
     cli_pyassist.cli_notes_interaction.load_notes(notes_filename)
