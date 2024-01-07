@@ -43,7 +43,7 @@ class CliPyassist(AbstractPyassist):
     def notes_interaction(self, *args):
         return self.cli_notes_interaction.cli_notes_menu()
 
-    def sort_init(self, folder_path):
+    def sort_init(self, folder_path=None):
         if not folder_path:
             folder_path = input(
                 "Type the path to the folder whose contents you want to sort: "
