@@ -475,7 +475,7 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         """
         if cmd not in commands_dict:
             matches = difflib.get_close_matches(cmd, commands_dict)
-            info = f"\nmaybe you meant: {" or ".join(matches)}" if matches else ""
+            info = f"\nmaybe you meant: {' or '.join(matches)}" if matches else ""
             return f"Command {cmd} is not recognized" + info
         cmd = commands_dict[cmd]
         return cmd(self, argument)

@@ -16,4 +16,4 @@ class Address:
         self.country = country
 
     def __repr__(self) -> str:
-        return f"Address:{f'\nstreet: {self.street} ' if self.street else ''}{f'\ncity: {self.city} ' if self.city else ''}{f'\nzip code: {self.zip_code} ' if self.zip_code else ''}{f'\ncountry: {self.country} ' if self.country else ''}"
+        return "Address:{f'\nstreet: {self.street} ' if self.street else ''}{f'city: {self.city} ' if self.city else ''}{f'\nzip code: {self.zip_code} ' if self.zip_code else ''}{f'\ncountry: {self.country} ' if self.country else ''}"

@@ -127,7 +127,7 @@ class CliPyassist(AbstractPyassist):
         """
         if cmd not in self.COMMANDS:
             matches = difflib.get_close_matches(cmd, self.COMMANDS)
-            info = f"\nmaybe you meant: {" or ".join(matches)}" if matches else ""
+            info = f"\nmaybe you meant: {' or '.join(matches)}" if matches else ""
             return f"Command {cmd} is not recognized" + info
         cmd = self.COMMANDS[cmd]
         return cmd(self, argument)

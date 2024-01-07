@@ -92,7 +92,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
         new_tags = set(input("Type new tags (separated by space): ").strip().split())
         for tag in new_tags:
             note.add_tag(tag)
-        return f'Tags: "{', '.join(new_tags)}" added to the note.'
+        return f"Tags: {', '.join(new_tags)} added to the note."
 
     def _del_tag(self, note: Note):
         tag_completer = FuzzyWordCompleter(note.tags)
@@ -106,7 +106,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
         )
         for tag in tags_to_delete:
             note.delete_tag(tag)
-        return f'Tags: "{', '.join(tags_to_delete)}" deleted from the note.'
+        return f"Tags: {', '.join(tags_to_delete)} deleted from the note."
 
     NOTE_EDIT_COMMANDS = {
         "title": _edit_title,
@@ -259,7 +259,7 @@ class CliNotesInteraction(AbstractNotesInteraction):
         """
         if cmd not in commands_dict:
             matches = difflib.get_close_matches(cmd, commands_dict)
-            info = f"\nmaybe you meant: {" or ".join(matches)}" if matches else ""
+            info = f'\nmaybe you meant: {" or ".join(matches)}' if matches else ""
             return f"Command {cmd} is not recognized" + info
         cmd = commands_dict[cmd]
         return cmd(self, argument)
