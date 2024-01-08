@@ -119,43 +119,36 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
         "address": add_address,
     }
 
+    def _add_data(self, arg):
+        datas = []
+        answer = input(f"Type y (yes) if you want to add {arg}: ").strip().lower()
+        if answer == "y" or answer == "yes":
+            data = self.CREATE_RECORD_COMMANDS[arg](self)
+            if isinstance(data, Phone | Email):
+                while True:
+                    if data:
+                        datas.append(data)
+                        answer = (
+                            input(f"Type y (yes) if you want to add more {arg}: ")
+                            .strip()
+                            .lower()
+                        )
+                        if answer == "y" or answer == "yes":
+                            data = self.CREATE_RECORD_COMMANDS[arg](self)
+                            continue
+                        else:
+                            return datas
+                    return datas
+            else:
+                return data
+
     def _create_record(self, name: Name) -> Record:
-        phones = []
-        emails = []
-        birthday = None
-        address = None
-        record_fields = [phones, emails, birthday, address]
-        record_fields_names = list(self.CREATE_RECORD_COMMANDS.keys())
-        i = -1
-        for field in record_fields:
-            i += 1
-            answer = (
-                input(f"Type y (yes) if you want to add {record_fields_names[i]}: ")
-                .strip()
-                .lower()
-            )
-            if answer == "y" or answer == "yes":
-                data = self.CREATE_RECORD_COMMANDS[record_fields_names[i]](self)
-                if isinstance(field, list):
-                    while True:
-                        if data:
-                            field.append(data)
-                            answer = (
-                                input(
-                                    f"Type y (yes) if you want to add more {record_fields_names[i]}: "
-                                )
-                                .strip()
-                                .lower()
-                            )
-                            if answer == "y" or answer == "yes":
-                                data = self.CREATE_RECORD_COMMANDS[
-                                    record_fields_names[i]
-                                ](self)
-                                continue
-                        break
-                else:
-                    field = data
-        return Record(name, phones, emails, birthday, address)
+        phones = self._add_data("phones")
+        emails = self._add_data("emails")
+        birthday = self._add_data("birthday")
+        address = self._add_data("address")
+        record = Record(name, phones, emails, birthday, address)
+        return record
 
     @_error_handler
     def add_record(self, argument):

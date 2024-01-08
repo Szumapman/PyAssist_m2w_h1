@@ -45,4 +45,4 @@ class Birthday(Field):
 
     # overridden method __repr__
     def __repr__(self) -> str:
-        return self._value.strftime("%A %d-%m-%Y")
+        return self.value.strftime("%A %d-%m-%Y")
