@@ -66,6 +66,8 @@ class Notes(UserDict):
                     note_dict["content"] = note.content.value
                     note_dict["tags"] = "|".join(note.tags)
                     writer.writerow(note_dict)
+            return True
+        return False
 
     def import_from_csv(self, file_path: Path):
         with open(file_path, "r", newline="") as fh:

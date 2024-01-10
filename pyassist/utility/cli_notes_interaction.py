@@ -181,8 +181,9 @@ class CliNotesInteraction(AbstractNotesInteraction):
     def export_to_csv(self, file_name: str):
         full_path = self._import_export_prepare(file_name)
         if full_path:
-            self.notes.export_to_csv(full_path)
-            return f"Data exported successfully to {full_path}."
+            if self.notes.export_to_csv(full_path):
+                return f"Data exported successfully to {full_path}."
+            return "Nothing to export, operation cancelled."
         return "Export cancelled."
 
     @_error_handler

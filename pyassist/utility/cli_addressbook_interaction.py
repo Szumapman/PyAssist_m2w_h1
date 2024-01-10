@@ -390,8 +390,9 @@ class CliAddressBookInteraction(AbstractAddressbookInteraction):
     def export_to_csv(self, argument):
         full_path = self._import_export_prepare(argument)
         if full_path:
-            self.addressbook.export_to_csv(full_path)
-            return f"Data exported successfully to {full_path}."
+            if self.addressbook.export_to_csv(full_path):
+                return f"Data exported successfully to {full_path}."
+            return "Nothing to export, operation cancelled."
         return "Export cancelled."
 
     @_error_handler
